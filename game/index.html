@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dungeon Escape</title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/game.css">
+
+</head>
+
+<body>
+
+    <!-- MENU INICIAL -->
+
+    <div id="menu-screen">
+
+        <h1>Dungeon Escape</h1>
+
+        <button id="start-button">
+            Start Game
+        </button>
+
+    </div>
+
+    <!-- JOGO -->
+
+    <div id="game-container">
+
+        <!-- HUD -->
+
+        <div id="hud">
+
+            <div id="life">
+                ❤️ Vida: 3
+            </div>
+
+            <div id="score">
+                ⭐ Score: 0
+            </div>
+
+            <div id="level">
+                🏰 Fase: 1
+            </div>
+
+        </div>
+
+        <!-- ÁREA DO JOGO -->
+
+        <div id="game-area">
+
+            <!-- PLAYER -->
+
+            <div id="player"></div>
+
+            <!-- PORTA -->
+
+            <div id="door"></div>
+
+        </div>
+
+    </div>
+
+    <!-- GAME OVER -->
+
+    <div id="game-over-screen">
+
+        <h1>GAME OVER</h1>
+
+        <button id="restart-button">
+            Restart
+        </button>
+
+    </div>
+
+    <!-- JS -->
+
+    <script type="module" src="js/main.js"></script>
+
+</body>
+
+</html>

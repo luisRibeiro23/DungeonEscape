@@ -1,0 +1,13 @@
+.projectile {
+
+    position: absolute;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background-color: cyan;
+
+    box-shadow: 0 0 10px cyan;
+}

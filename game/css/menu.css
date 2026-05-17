@@ -1,0 +1,58 @@
+#menu-screen {
+    width: 100vw;
+    height: 100vh;
+
+    background: #000;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+}
+
+#menu-screen h1 {
+    font-size: 72px;
+    margin-bottom: 30px;
+}
+
+#start-button {
+    padding: 20px 40px;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    border: none;
+    border-radius: 10px;
+
+    background: gold;
+}
+
+#game-over-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.9);
+
+    z-index: 999;
+}
+
+#game-over-screen h1 {
+
+    font-size: 64px;
+
+    color: red;
+
+    margin-bottom: 20px;
+}
