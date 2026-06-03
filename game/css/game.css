@@ -40,7 +40,9 @@
     image-rendering: pixelated;
 }
 
-/* PLAYER */
+/* ======================
+   PLAYER
+   ====================== */
 
 #player {
 
@@ -59,6 +61,16 @@
     transition:
         opacity 0.1s,
         transform 0.1s;
+}
+
+/* Escudo ativo — brilho dourado pulsante */
+#player.shield-active {
+    animation: shieldPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes shieldPulse {
+    from { filter: drop-shadow(0 0 6px  gold) drop-shadow(0 0 12px gold); }
+    to   { filter: drop-shadow(0 0 12px gold) drop-shadow(0 0 24px gold); }
 }
 
 .hit-effect {
@@ -82,23 +94,11 @@
 }
 
 @keyframes hitFade {
-
-    from {
-
-        opacity: 1;
-
-        transform: scale(1);
-    }
-
-    to {
-
-        opacity: 0;
-
-        transform: scale(1.5);
-    }
+    from { opacity: 1; transform: scale(1);   }
+    to   { opacity: 0; transform: scale(1.5); }
 }
 
-.smoke{
+.smoke {
     position: absolute;
 
     width: 24px;
@@ -119,18 +119,8 @@
 }
 
 @keyframes smokeFade {
-    from {
-        opacity: 1;
-
-        transform:
-            scale(1);
-    }
-    to{
-        opacity: 0;
-
-        transform:
-            scale(2);
-    }
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(2); }
 }
 
 #door {
@@ -154,29 +144,304 @@
     image-rendering: pixelated;
 }
 
+/* ======================
+   INIMIGOS
+   ====================== */
+
 .enemy {
     position: absolute;
 
-    width: 48px;
-    height: 48px;
-
-    background-size: 100% 100%;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 
     image-rendering: pixelated;
+
+    animation: enemyBob 0.5s ease-in-out infinite alternate;
 }
 
+.enemy-slime,
+.enemy-slime-mini {
+    animation: enemyBobSlime 0.7s ease-in-out infinite alternate;
+}
+
+.enemy-skeleton {
+    animation: enemyBobSkeleton 0.35s ease-in-out infinite alternate;
+}
+
+.enemy-demon {
+    animation: enemyBobDemon 0.5s ease-in-out infinite alternate;
+}
+
+.enemy-boss {
+    animation: enemyBobBoss 0.6s ease-in-out infinite alternate;
+}
+
+/* Boss fase 2 */
+.boss-phase2 {
+    animation: enemyBobBoss 0.4s ease-in-out infinite alternate,
+               bossRage 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes bossRage {
+    from { filter: drop-shadow(0 0 10px red)  drop-shadow(0 0 20px darkred); }
+    to   { filter: drop-shadow(0 0 20px red)  drop-shadow(0 0 40px darkred); }
+}
+
+/* Demon dashing */
+.demon-dashing {
+    filter: brightness(1.8) hue-rotate(30deg) !important;
+}
+
+@keyframes enemyBob {
+    from { transform: translateY(0px); }
+    to   { transform: translateY(-4px); }
+}
+
+@keyframes enemyBobSlime {
+    from { transform: translateY(0px) scaleY(1);    }
+    to   { transform: translateY(-3px) scaleY(1.05); }
+}
+
+@keyframes enemyBobSkeleton {
+    from { transform: translateY(0px) rotate(-1deg); }
+    to   { transform: translateY(-5px) rotate(1deg);  }
+}
+
+@keyframes enemyBobDemon {
+    from { transform: translateY(0px) rotate(-0.5deg); }
+    to   { transform: translateY(-5px) rotate(0.5deg);  }
+}
+
+@keyframes enemyBobBoss {
+    from { transform: translateY(0px) scale(1);    }
+    to   { transform: translateY(-6px) scale(1.01); }
+}
+
+/* ======================
+   PROJÉTEIS
+   ====================== */
+
 .projectile {
-
     position: absolute;
+    z-index: 8;
+    pointer-events: none;
+    image-rendering: pixelated;
+}
 
-    width: 16px;
-    height: 16px;
+/* Projétil padrão do player — usa bullet.png */
+.projectile-default {
+    width: 48px;
+    height: 24px;
+
+    background-image:
+        url("../assets/sprites/project/bullet.png");
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    /* Remove fundo preto da imagem */
+    mix-blend-mode: screen;
+}
+
+/* Osso do skeleton — usa osso.png */
+.projectile-bone {
+    width: 20px;
+    height: 20px;
+
+    background-image:
+        url("../assets/sprites/project/osso.png");
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: boneSpin 0.4s linear infinite;
+}
+
+@keyframes boneSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Projétil do boss — CSS puro, bola de fogo */
+.projectile-boss-bullet {
+    width: 14px;
+    height: 14px;
 
     border-radius: 50%;
 
-    background-color: cyan;
+    background: radial-gradient(circle, #ff6600, #880000);
 
-    box-shadow: 0 0 10px cyan;
+    box-shadow:
+        0 0 8px  rgba(255, 68, 0, 0.8),
+        0 0 16px rgba(255, 68, 0, 0.4);
+
+    animation: bossBulletPulse 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes bossBulletPulse {
+    from { box-shadow: 0 0 6px  rgba(255,68,0,0.8), 0 0 12px rgba(255,68,0,0.4); }
+    to   { box-shadow: 0 0 12px rgba(255,68,0,1.0), 0 0 24px rgba(255,68,0,0.6); }
+}
+
+/* ======================
+   EFEITO DE INVOCAÇÃO
+   ====================== */
+
+.summon-effect {
+    position: absolute;
+
+    width: 64px;
+    height: 64px;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(180, 0, 255, 0.9);
+
+    box-shadow:
+        0 0 16px rgba(180, 0, 255, 0.7),
+        inset 0 0 16px rgba(180, 0, 255, 0.3);
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    animation: summonPulse 0.8s ease-out forwards;
+}
+
+.summon-effect::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 100, 255, 0.6);
+    animation: summonPulse 0.8s 0.1s ease-out forwards;
+}
+
+.summon-effect::after {
+    content: '✦';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: rgba(220, 100, 255, 0.9);
+    animation: summonSpin 0.8s linear forwards;
+}
+
+@keyframes summonPulse {
+    0%   { opacity: 0; transform: scale(0.3);  }
+    40%  { opacity: 1; transform: scale(1.2);  }
+    70%  { opacity: 1; transform: scale(0.95); }
+    100% { opacity: 0; transform: scale(1.4);  }
+}
+
+@keyframes summonSpin {
+    from { opacity: 0; transform: rotate(0deg)   scale(0.5); }
+    40%  { opacity: 1; }
+    to   { opacity: 0; transform: rotate(180deg) scale(1.5); }
+}
+
+/* ======================
+   TIMER NO HUD
+   ====================== */
+
+#timer {
+    font-size: 24px;
+    color: white;
+    min-width: 80px;
+    text-align: center;
+    transition: color 0.3s;
+}
+
+#timer.urgent {
+    color: #ff4444;
+    animation: timerUrgent 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes timerUrgent {
+    from { transform: scale(1);   opacity: 1;   }
+    to   { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* ======================
+   POWER-UPS NO MAPA
+   ====================== */
+
+.powerup {
+    position: absolute;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    border: 2px solid var(--powerup-color, white);
+
+    background: rgba(0, 0, 0, 0.6);
+
+    box-shadow: 0 0 10px var(--powerup-color, white);
+
+    color: var(--powerup-color, white);
+
+    pointer-events: none;
+
+    z-index: 6;
+
+    animation: powerupFloat 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes powerupFloat {
+    from { transform: translateY(0px);  }
+    to   { transform: translateY(-6px); }
+}
+
+/* ======================
+   POWER-UPS NO HUD
+   ====================== */
+
+#powerup-hud {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.powerup-hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 16px;
+}
+
+.powerup-hud-bar {
+    width: 50px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.powerup-hud-fill {
+    height: 100%;
+    width: 100%;
+    background: var(--color, white);
+    border-radius: 2px;
+    animation: powerupBarDrain var(--duration, 5000ms) linear forwards;
+}
+
+@keyframes powerupBarDrain {
+    from { width: 100%; }
+    to   { width: 0%;   }
 }

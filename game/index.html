@@ -24,10 +24,52 @@
 
     <div id="menu-screen">
 
-        <h1>Dungeon Escape</h1>
+        <div class="menu-title-wrapper">
+
+            <span class="menu-subtitle">— A dungeon awaits —</span>
+
+            <h1>Dungeon Escape</h1>
+
+            <div class="menu-divider"></div>
+
+        </div>
+
+        <div id="high-score-display">
+            🏆 High Score: 0
+        </div>
+
+        <!-- SELEÇÃO DE DIFICULDADE -->
+
+        <div id="difficulty-selector">
+
+            <p>Dificuldade</p>
+
+            <div id="difficulty-buttons">
+
+                <button
+                    class="difficulty-btn"
+                    data-difficulty="easy">
+                    Fácil
+                </button>
+
+                <button
+                    class="difficulty-btn selected"
+                    data-difficulty="normal">
+                    Normal
+                </button>
+
+                <button
+                    class="difficulty-btn"
+                    data-difficulty="hard">
+                    Difícil
+                </button>
+
+            </div>
+
+        </div>
 
         <button id="start-button">
-            Start Game
+            Iniciar Jogo
         </button>
 
     </div>
@@ -40,6 +82,8 @@
 
         <div id="hud">
 
+            <div id="timer">⏱️ 30s</div>
+
             <div id="life">
                 ❤️ Vida: 3
             </div>
@@ -51,6 +95,7 @@
             <div id="level">
                 🏰 Fase: 1
             </div>
+            <div id="powerup-hud"></div>
 
         </div>
 
@@ -70,14 +115,51 @@
 
     </div>
 
+    <!-- PAUSA -->
+
+    <div id="pause-screen">
+
+        <h1>PAUSADO</h1>
+
+        <button id="resume-button">
+            Continuar
+        </button>
+
+        <button id="restart-button-pause"
+                onclick="location.reload()">
+            Menu Principal
+        </button>
+
+    </div>
+
     <!-- GAME OVER -->
 
     <div id="game-over-screen">
 
         <h1>GAME OVER</h1>
 
+        <p id="final-score">Pontuação: 0</p>
+
         <button id="restart-button">
-            Restart
+            Jogar Novamente
+        </button>
+
+    </div>
+
+    <!-- VITÓRIA -->
+
+    <div id="victory-screen">
+
+        <h1>VOCÊ VENCEU! 🏆</h1>
+
+        <p id="victory-score">Pontuação: 0</p>
+
+        <p id="new-record">
+            🎉 Novo Recorde!
+        </p>
+
+        <button id="victory-restart-button">
+            Jogar Novamente
         </button>
 
     </div>

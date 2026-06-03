@@ -1,0 +1,87 @@
+/* ======================
+   EFEITO DE INVOCAÇÃO
+   Aparece no local antes do inimigo surgir
+   ====================== */
+
+.summon-effect {
+    position: absolute;
+
+    width: 64px;
+    height: 64px;
+
+    /* Centraliza o efeito no ponto de spawn */
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(180, 0, 255, 0.9);
+
+    box-shadow:
+        0 0 16px rgba(180, 0, 255, 0.7),
+        inset 0 0 16px rgba(180, 0, 255, 0.3);
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    animation: summonPulse 0.8s ease-out forwards;
+}
+
+/* Segundo anel interno */
+.summon-effect::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 100, 255, 0.6);
+    animation: summonPulse 0.8s 0.1s ease-out forwards;
+}
+
+/* Cruz no centro */
+.summon-effect::after {
+    content: '✦';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: rgba(220, 100, 255, 0.9);
+    animation: summonSpin 0.8s linear forwards;
+}
+
+@keyframes summonPulse {
+    0%   { opacity: 0; transform: scale(0.3); }
+    40%  { opacity: 1; transform: scale(1.2); }
+    70%  { opacity: 1; transform: scale(0.95); }
+    100% { opacity: 0; transform: scale(1.4); }
+}
+
+@keyframes summonSpin {
+    from { opacity: 0; transform: rotate(0deg) scale(0.5); }
+    40%  { opacity: 1; }
+    to   { opacity: 0; transform: rotate(180deg) scale(1.5); }
+}
+
+/* ======================
+   TIMER NO HUD
+   ====================== */
+
+#timer {
+    font-size: 24px;
+    color: white;
+    min-width: 80px;
+    text-align: center;
+    transition: color 0.3s;
+}
+
+/* Fica vermelho quando restam menos de 10s */
+#timer.urgent {
+    color: #ff4444;
+    animation: timerUrgent 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes timerUrgent {
+    from { transform: scale(1);    opacity: 1;   }
+    to   { transform: scale(1.1);  opacity: 0.8; }
+}

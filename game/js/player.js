@@ -1,11 +1,11 @@
 export class Player {
 
-    constructor() {
+    constructor(life = 3) {
 
         this.element =
             document.getElementById("player");
 
-        this.life = 3;
+        this.life = life;
 
         this.x = 100;
         this.y = 100;
@@ -26,6 +26,24 @@ export class Player {
 
         this.gameArea =
             document.getElementById("game-area");
+
+        // ======================
+        // ANIMAÇÃO DE FRAMES
+        // ======================
+
+        // Frame atual: 0 = base, 1 = alternativo
+        this.animFrame = 0;
+
+        // Contador de passos para controlar
+        // a velocidade da animação
+        this.stepCounter = 0;
+
+        // A cada quantos frames de jogo
+        // troca o sprite (8 = animação suave)
+        this.animSpeed = 8;
+
+        // Se o player está se movendo
+        this.isMoving = false;
 
         // SPRITE INICIAL
 
@@ -115,6 +133,33 @@ export class Player {
             this.direction = "north";
         }
 
+        // ======================
+        // ANIMAÇÃO DE CAMINHADA
+        // ======================
+
+        this.isMoving = (dx !== 0 || dy !== 0);
+
+        if (this.isMoving) {
+
+            this.stepCounter++;
+
+            // Troca o frame a cada animSpeed ticks
+            if (this.stepCounter >= this.animSpeed) {
+
+                this.stepCounter = 0;
+
+                // Alterna entre frame 0 e 1
+                this.animFrame =
+                    this.animFrame === 0 ? 1 : 0;
+            }
+
+        } else {
+
+            // Parado: volta pro frame base e reseta
+            this.animFrame = 0;
+            this.stepCounter = 0;
+        }
+
         this.updateSprite();
 
         // ======================
@@ -146,8 +191,15 @@ export class Player {
 
     updateSprite() {
 
-        this.element.style.backgroundImage =
+        // Frame 0 = sprite base  (player-south.png)
+        // Frame 1 = sprite alt   (player-south-1.png)
 
-            `url("assets/sprites/player/player-${this.direction}.png")`;
+        const frameSuffix =
+            this.animFrame === 0
+                ? ""
+                : "-1";
+
+        this.element.style.backgroundImage =
+            `url("assets/sprites/player/player-${this.direction}${frameSuffix}.png")`;
     }
 }
