@@ -1,6 +1,6 @@
 export class Player {
 
-    constructor(life = 3) {
+    constructor(life = 32222) {
 
         this.element =
             document.getElementById("player");

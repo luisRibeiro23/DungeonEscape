@@ -5,9 +5,10 @@ import { Projectile } from "./projectile.js";
 import { PowerUp, tryDropPowerUp, powerupTypes } from "./powerup.js";
 import { saveHighScore } from "./storage.js";
 import { phases, TOTAL_PHASES } from "./level.js";
+import { cheats, registerCheatCallbacks } from "./cheat.js";
 
 // ======================
-// CONFIGURAÇÕES DE DIFICULDADE
+// DIFICULDADE
 // ======================
 
 const difficultySettings = {
@@ -47,13 +48,7 @@ export function startGame(difficulty = "normal") {
         difficultySettings[difficulty] ||
         difficultySettings.normal;
 
-    // ======================
-    // PLAYER
-    // ======================
-
     const player = new Player(settings.playerLife);
-
-    // Active power-ups no player
 
     const activePowerUps = {
         "triple-shot": false,
@@ -61,64 +56,291 @@ export function startGame(difficulty = "normal") {
         "speed":       false,
     };
 
-    // ======================
-    // ARRAYS
-    // ======================
-
     const enemies     = [];
     const projectiles = [];
     const powerups    = [];
 
-    // ======================
     // HUD
-    // ======================
 
     const lifeElement  = document.getElementById("life");
     const scoreElement = document.getElementById("score");
     const levelElement = document.getElementById("level");
     const timerElement = document.getElementById("timer");
 
-    // ======================
-    // TELAS
-    // ======================
+    // Boss HUD
+
+    const bossHud    = document.getElementById("boss-hud");
+    const bossHudBar = document.getElementById("boss-hud-bar");
+    const bossHudHp  = document.getElementById("boss-hud-hp");
+
+    // Telas
 
     const gameContainer        = document.getElementById("game-container");
     const gameArea             = document.getElementById("game-area");
     const gameOverScreen       = document.getElementById("game-over-screen");
     const victoryScreen        = document.getElementById("victory-screen");
     const pauseScreen          = document.getElementById("pause-screen");
+    const cutsceneScreen       = document.getElementById("cutscene-screen");
+    const creditsScreen        = document.getElementById("credits-screen");
     const restartButton        = document.getElementById("restart-button");
     const victoryRestartButton = document.getElementById("victory-restart-button");
     const resumeButton         = document.getElementById("resume-button");
+    const creditsButton        = document.getElementById("credits-button");
     const door                 = document.getElementById("door");
     const finalScoreElement    = document.getElementById("final-score");
     const victoryScoreElement  = document.getElementById("victory-score");
     const newRecordElement     = document.getElementById("new-record");
 
-    // ======================
-    // GAME STATE
-    // ======================
+    // State
 
-    let score    = 0;
-    let level    = 1;
-
-    let gameRunning       = true;
-    let gamePaused        = false;
+    let score              = 0;
+    let level              = 1;
+    let gameRunning        = true;
+    let gamePaused         = false;
     let playerInvulnerable = false;
-
-    let waveActive     = false;
-    let spawnTimeout   = null;
-    let timerInterval  = null;
-    let timeRemaining  = 0;
-
-    let canShoot       = true;
-    const shootCooldown = 300;
-
-    let canDash        = true;
-    const dashCooldown  = 1000;
+    let waveActive         = false;
+    let spawnTimeout       = null;
+    let timerInterval      = null;
+    let timeRemaining      = 0;
+    let canShoot           = true;
+    const shootCooldown    = 300;
+    let canDash            = true;
+    const dashCooldown     = 1000;
+    let bossRef            = null;
 
     // ======================
-    // EFEITO DE INVOCAÇÃO
+    // REGISTRA CALLBACKS DOS CHEATS
+    // ======================
+
+    registerCheatCallbacks({
+
+        onSkipPhase: () => {
+
+            if (!gameRunning || gamePaused) return;
+
+            // Mata todos os inimigos e força próxima fase
+
+            [...enemies].forEach((e) => {
+                e.remove();
+            });
+
+            enemies.length = 0;
+
+            waveActive = false;
+
+            clearTimeout(spawnTimeout);
+            clearInterval(timerInterval);
+
+            if (timerElement) {
+                timerElement.innerHTML = "⏱️ 0s";
+                timerElement.classList.remove("urgent");
+            }
+
+            door.style.display = "block";
+        },
+
+        onKillAll: () => {
+
+            if (!gameRunning || gamePaused) return;
+
+            [...enemies].forEach((e) => {
+                e.remove();
+                score += 10;
+            });
+
+            enemies.length = 0;
+
+            scoreElement.innerHTML = `⭐ Score: ${score}`;
+
+            hideBossHud();
+        },
+
+        onExtraLives: () => {
+
+            if (!gameRunning) return;
+
+            player.life += 5;
+
+            lifeElement.innerHTML =
+                `❤️ Vida: ${player.life}`;
+        }
+    });
+
+    // ======================
+    // BARRA DE VIDA DO BOSS
+    // ======================
+
+    function showBossHud(boss) {
+
+        bossRef = boss;
+
+        bossHud.style.display = "flex";
+
+        updateBossHud();
+    }
+
+    function hideBossHud() {
+
+        bossHud.style.display = "none";
+
+        bossRef = null;
+    }
+
+    function updateBossHud() {
+
+        if (!bossRef) return;
+
+        const pct =
+            Math.max(0, bossRef.life / bossRef.maxLife * 100);
+
+        bossHudBar.style.width = pct + "%";
+
+        bossHudHp.innerHTML =
+            `${Math.max(0, bossRef.life)} / ${bossRef.maxLife}`;
+
+        if (bossRef.phase2) {
+            bossHudBar.style.background =
+                "linear-gradient(90deg, #6600cc, #aa44ff, #6600cc)";
+        }
+    }
+
+    // ======================
+    // CUTSCENE + CRÉDITOS
+    // ======================
+
+    function playCutscene(onComplete) {
+
+        gameContainer.style.display = "none";
+
+        cutsceneScreen.style.display = "flex";
+
+        const lines = [
+            document.getElementById("cutscene-line-1"),
+            document.getElementById("cutscene-line-2"),
+            document.getElementById("cutscene-line-3"),
+            document.getElementById("cutscene-line-4"),
+        ];
+
+        lines.forEach((line, i) => {
+
+            setTimeout(() => {
+
+                line.style.animation =
+                    `cutsceneLineIn 1.2s ease forwards`;
+
+            }, i * 1800);
+        });
+
+        setTimeout(onComplete, lines.length * 1800 + 2000);
+    }
+
+    function playCredits(onComplete) {
+
+        cutsceneScreen.style.display = "none";
+
+        creditsScreen.style.display = "flex";
+
+        creditsButton.addEventListener("click", () => {
+
+            creditsScreen.style.display = "none";
+
+            onComplete();
+
+        }, { once: true });
+    }
+
+    // ======================
+    // VITÓRIA
+    // ======================
+
+    function victory() {
+
+        gameRunning = false;
+
+        clearTimeout(spawnTimeout);
+        clearInterval(timerInterval);
+
+        const isNewRecord = saveHighScore(score);
+
+        playCutscene(() => {
+
+            playCredits(() => {
+
+                victoryScoreElement.innerHTML =
+                    `Pontuação: ${score}`;
+
+                if (isNewRecord) {
+                    newRecordElement.style.display = "block";
+                }
+
+                victoryScreen.style.display = "flex";
+            });
+        });
+    }
+
+    // ======================
+    // MORTE DO BOSS
+    // ======================
+
+    function killBoss(boss, index) {
+
+        boss.element.classList.remove("enemy-boss");
+        boss.element.classList.add("boss-dying");
+
+        hideBossHud();
+
+        setTimeout(() => {
+
+            boss.element.remove();
+
+            enemies.splice(index, 1);
+
+            score += 100;
+
+            scoreElement.innerHTML = `⭐ Score: ${score}`;
+
+            victory();
+
+        }, 1500);
+    }
+
+    // ======================
+    // GAME OVER
+    // ======================
+
+    function gameOver() {
+
+        gameRunning = false;
+
+        clearTimeout(spawnTimeout);
+        clearInterval(timerInterval);
+
+        hideBossHud();
+
+        saveHighScore(score);
+
+        finalScoreElement.innerHTML = `Pontuação: ${score}`;
+
+        gameContainer.style.display  = "none";
+        gameOverScreen.style.display = "flex";
+    }
+
+    // ======================
+    // PAUSA
+    // ======================
+
+    function togglePause() {
+
+        if (!gameRunning) return;
+
+        gamePaused = !gamePaused;
+
+        pauseScreen.style.display =
+            gamePaused ? "flex" : "none";
+    }
+
+    // ======================
+    // SPAWN
     // ======================
 
     function createSummonEffect(x, y, onComplete) {
@@ -126,34 +348,24 @@ export function startGame(difficulty = "normal") {
         const effect = document.createElement("div");
 
         effect.classList.add("summon-effect");
-
         effect.style.left = x + "px";
         effect.style.top  = y + "px";
 
         gameArea.appendChild(effect);
 
         setTimeout(() => {
-
             effect.remove();
-
             onComplete();
-
         }, 800);
     }
-
-    // ======================
-    // SPAWN ENEMY
-    // ======================
 
     function spawnEnemy(type) {
 
         let x, y;
 
         do {
-
             x = Math.random() * (gameArea.clientWidth  - 100) + 50;
             y = Math.random() * (gameArea.clientHeight - 100) + 50;
-
         } while (
             Math.abs(x - player.x) < 200 ||
             Math.abs(y - player.y) < 200
@@ -170,70 +382,45 @@ export function startGame(difficulty = "normal") {
             );
 
             enemies.push(enemy);
+
+            if (type === "boss") showBossHud(enemy);
         });
     }
-
-    // ======================
-    // SPAWN SLIME MINI
-    // Chamado ao matar um slime normal
-    // ======================
 
     function spawnSlimeMini(x, y) {
 
         for (let i = 0; i < 2; i++) {
 
-            const offsetX = i === 0 ? -20 : 20;
-
-            const mini = new Enemy(
+            enemies.push(new Enemy(
                 "slime-mini",
-                x + offsetX,
+                x + (i === 0 ? -20 : 20),
                 y,
                 settings.enemySpeedMultiplier,
                 settings.enemyLifeMultiplier
-            );
-
-            enemies.push(mini);
+            ));
         }
     }
-
-    // ======================
-    // SPAWN PROJÉTIL INIMIGO
-    // Callback passado pro enemy.update()
-    // ======================
 
     function spawnEnemyProjectile(x, y, dirX, dirY, type) {
 
-        const proj = new Projectile(
-            x, y, dirX, dirY,
-            "enemy",
-            type
+        projectiles.push(
+            new Projectile(x, y, dirX, dirY, "enemy", type)
         );
-
-        projectiles.push(proj);
     }
-
-    // ======================
-    // BOSS SUMMON
-    // Invoca 2 inimigos aleatórios perto do boss
-    // ======================
 
     function bossSummon() {
 
-        const summonTypes = ["slime", "skeleton", "demon"];
+        const types = ["slime", "skeleton", "demon"];
 
         for (let i = 0; i < 2; i++) {
-
-            const type =
-                summonTypes[
-                    Math.floor(Math.random() * summonTypes.length)
-                ];
-
-            spawnEnemy(type);
+            spawnEnemy(
+                types[Math.floor(Math.random() * types.length)]
+            );
         }
     }
 
     // ======================
-    // APLICAR POWER-UP
+    // POWER-UPS
     // ======================
 
     function applyPowerUp(type) {
@@ -242,11 +429,7 @@ export function startGame(difficulty = "normal") {
 
         activePowerUps[type] = true;
 
-        // Atualiza visual do HUD de power-up
-
         showPowerUpHUD(type, config.duration);
-
-        // Efeito específico
 
         if (type === "speed") {
             player.normalSpeed = 9;
@@ -257,8 +440,6 @@ export function startGame(difficulty = "normal") {
             playerInvulnerable = true;
             player.element.classList.add("shield-active");
         }
-
-        // Remove após duração
 
         setTimeout(() => {
 
@@ -277,10 +458,6 @@ export function startGame(difficulty = "normal") {
         }, config.duration);
     }
 
-    // ======================
-    // HUD DE POWER-UP
-    // ======================
-
     function showPowerUpHUD(type, duration) {
 
         const existing =
@@ -291,28 +468,24 @@ export function startGame(difficulty = "normal") {
         const hud = document.createElement("div");
 
         hud.id = `powerup-hud-${type}`;
-
         hud.classList.add("powerup-hud-item");
 
         hud.innerHTML = `
             <span>${powerupTypes[type].label}</span>
             <div class="powerup-hud-bar">
                 <div class="powerup-hud-fill"
-                     style="--duration: ${duration}ms;
-                            --color: ${powerupTypes[type].color}">
+                     style="--duration:${duration}ms;
+                            --color:${powerupTypes[type].color}">
                 </div>
-            </div>
-        `;
+            </div>`;
 
-        document
-            .getElementById("powerup-hud")
-            .appendChild(hud);
+        document.getElementById("powerup-hud").appendChild(hud);
 
         setTimeout(() => hud.remove(), duration + 100);
     }
 
     // ======================
-    // WAVE COM SPAWN DINÂMICO
+    // WAVE
     // ======================
 
     function startWave() {
@@ -379,12 +552,12 @@ export function startGame(difficulty = "normal") {
 
             if (!gameRunning || !waveActive) return;
 
-            const randomType =
+            const type =
                 phase.enemies[
                     Math.floor(Math.random() * phase.enemies.length)
                 ];
 
-            spawnEnemy(randomType);
+            spawnEnemy(type);
 
             const progress = 1 - (timeRemaining / totalDuration);
 
@@ -405,14 +578,10 @@ export function startGame(difficulty = "normal") {
 
         if (!timerElement) return;
 
-        const seconds = Math.max(0, Math.ceil(timeRemaining / 1000));
+        const s = Math.max(0, Math.ceil(timeRemaining / 1000));
 
-        timerElement.innerHTML = `⏱️ ${seconds}s`;
+        timerElement.innerHTML = `⏱️ ${s}s`;
     }
-
-    // ======================
-    // PRIMEIRA WAVE
-    // ======================
 
     startWave();
 
@@ -425,8 +594,9 @@ export function startGame(difficulty = "normal") {
         clearTimeout(spawnTimeout);
         clearInterval(timerInterval);
 
-        if (level >= TOTAL_PHASES) {
+        hideBossHud();
 
+        if (level >= TOTAL_PHASES) {
             victory();
             return;
         }
@@ -441,72 +611,18 @@ export function startGame(difficulty = "normal") {
     }
 
     // ======================
-    // VITÓRIA
-    // ======================
-
-    function victory() {
-
-        gameRunning = false;
-
-        const isNewRecord = saveHighScore(score);
-
-        victoryScoreElement.innerHTML = `Pontuação: ${score}`;
-
-        if (isNewRecord) {
-            newRecordElement.style.display = "block";
-        }
-
-        gameContainer.style.display = "none";
-        victoryScreen.style.display = "flex";
-    }
-
-    // ======================
-    // GAME OVER
-    // ======================
-
-    function gameOver() {
-
-        gameRunning = false;
-
-        clearTimeout(spawnTimeout);
-        clearInterval(timerInterval);
-
-        saveHighScore(score);
-
-        finalScoreElement.innerHTML = `Pontuação: ${score}`;
-
-        gameContainer.style.display  = "none";
-        gameOverScreen.style.display = "flex";
-    }
-
-    // ======================
-    // PAUSA
-    // ======================
-
-    function togglePause() {
-
-        if (!gameRunning) return;
-
-        gamePaused = !gamePaused;
-
-        pauseScreen.style.display =
-            gamePaused ? "flex" : "none";
-    }
-
-    // ======================
     // LISTENERS
     // ======================
 
     window.addEventListener("keydown", (event) => {
 
-        if (event.code === "Space")   shoot();
+        if (event.code === "Space")     shoot();
+        if (event.code === "ShiftLeft") dash();
 
         if (
             event.code === "Escape" ||
             event.code === "KeyP"
         ) togglePause();
-
-        if (event.code === "ShiftLeft") dash();
     });
 
     resumeButton.addEventListener("click",         () => togglePause());
@@ -514,7 +630,7 @@ export function startGame(difficulty = "normal") {
     victoryRestartButton.addEventListener("click", () => location.reload());
 
     // ======================
-    // TIRO DO PLAYER
+    // TIRO
     // ======================
 
     function shoot() {
@@ -526,44 +642,34 @@ export function startGame(difficulty = "normal") {
         const cx = player.x + 16;
         const cy = player.y + 16;
 
-        if (activePowerUps["triple-shot"]) {
+        // Triple shot: cheat OU power-up ativo
 
-            // Tiro triplo: central + dois angulados
+        if (cheats.tripleShot || activePowerUps["triple-shot"]) {
 
-            const angle =
-                Math.atan2(
-                    player.lastDirectionY,
-                    player.lastDirectionX
-                );
+            const angle = Math.atan2(
+                player.lastDirectionY,
+                player.lastDirectionX
+            );
 
-            const spread = 0.3;
-
-            [0, -spread, spread].forEach((offset) => {
+            [0, -0.3, 0.3].forEach((offset) => {
 
                 const a = angle + offset;
 
-                projectiles.push(
-                    new Projectile(
-                        cx, cy,
-                        Math.cos(a),
-                        Math.sin(a),
-                        "player",
-                        "default"
-                    )
-                );
+                projectiles.push(new Projectile(
+                    cx, cy,
+                    Math.cos(a), Math.sin(a),
+                    "player", "default"
+                ));
             });
 
         } else {
 
-            projectiles.push(
-                new Projectile(
-                    cx, cy,
-                    player.lastDirectionX,
-                    player.lastDirectionY,
-                    "player",
-                    "default"
-                )
-            );
+            projectiles.push(new Projectile(
+                cx, cy,
+                player.lastDirectionX,
+                player.lastDirectionY,
+                "player", "default"
+            ));
         }
 
         setTimeout(() => { canShoot = true; }, shootCooldown);
@@ -593,9 +699,7 @@ export function startGame(difficulty = "normal") {
             player.speed     = player.normalSpeed;
             player.isDashing = false;
 
-            // Não remove invulnerabilidade se escudo ativo
-
-            if (!activePowerUps["shield"]) {
+            if (!activePowerUps["shield"] && !cheats.godMode) {
                 playerInvulnerable = false;
             }
 
@@ -617,7 +721,6 @@ export function startGame(difficulty = "normal") {
         const hit = document.createElement("div");
 
         hit.classList.add("hit-effect");
-
         hit.style.left = x + "px";
         hit.style.top  = y + "px";
 
@@ -631,7 +734,6 @@ export function startGame(difficulty = "normal") {
         const smoke = document.createElement("div");
 
         smoke.classList.add("smoke");
-
         smoke.style.left = player.x + "px";
         smoke.style.top  = player.y + "px";
 
@@ -667,8 +769,7 @@ export function startGame(difficulty = "normal") {
 
         const now = performance.now();
 
-        let dx = 0;
-        let dy = 0;
+        let dx = 0, dy = 0;
 
         if (keys["w"]) dy -= player.speed;
         if (keys["s"]) dy += player.speed;
@@ -677,21 +778,21 @@ export function startGame(difficulty = "normal") {
 
         player.move(dx, dy);
 
-        // ======================
         // UPDATE ENEMIES
-        // ======================
 
-        enemies.forEach((enemy, enemyIndex) => {
+        enemies.forEach((enemy, i) => {
 
             enemy.update(
-                player.x,
-                player.y,
-                now,
+                player.x, player.y, now,
                 spawnEnemyProjectile,
                 bossSummon
             );
 
-            // Colisão player-enemy
+            if (enemy.type === "boss") updateBossHud();
+
+            // God mode — não toma dano por contato
+
+            if (cheats.godMode) return;
 
             if (
                 checkCollision(player.element, enemy.element)
@@ -702,8 +803,7 @@ export function startGame(difficulty = "normal") {
 
                 player.life--;
 
-                lifeElement.innerHTML =
-                    `❤️ Vida: ${player.life}`;
+                lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
 
                 player.element.style.opacity = "0.5";
 
@@ -718,42 +818,32 @@ export function startGame(difficulty = "normal") {
                 }, 1000);
 
                 enemy.remove();
-
-                enemies.splice(enemyIndex, 1);
+                enemies.splice(i, 1);
 
                 if (player.life <= 0) gameOver();
             }
         });
 
-        // ======================
         // UPDATE PROJECTILES
-        // ======================
 
-        projectiles.forEach((projectile, projIndex) => {
+        projectiles.forEach((proj, pi) => {
 
-            projectile.update();
-
-            // Remove se saiu da tela
+            proj.update();
 
             if (
-                projectile.x < 0 ||
-                projectile.x > window.innerWidth ||
-                projectile.y < 0 ||
-                projectile.y > window.innerHeight
+                proj.x < 0 || proj.x > window.innerWidth ||
+                proj.y < 0 || proj.y > window.innerHeight
             ) {
-
-                projectile.remove();
-                projectiles.splice(projIndex, 1);
+                proj.remove();
+                projectiles.splice(pi, 1);
                 return;
             }
 
-            // Projétil do PLAYER acerta inimigo
+            if (proj.owner === "player") {
 
-            if (projectile.owner === "player") {
+                enemies.forEach((enemy, ei) => {
 
-                enemies.forEach((enemy, enemyIndex) => {
-
-                    if (checkCollision(projectile.element, enemy.element)) {
+                    if (checkCollision(proj.element, enemy.element)) {
 
                         const dead = enemy.takeDamage(1);
 
@@ -761,42 +851,43 @@ export function startGame(difficulty = "normal") {
 
                         if (dead) {
 
-                            // Slime se divide
+                            if (enemy.type === "boss") {
+                                proj.remove();
+                                projectiles.splice(pi, 1);
+                                killBoss(enemy, ei);
+                                return;
+                            }
 
                             if (enemy.type === "slime") {
                                 spawnSlimeMini(enemy.x, enemy.y);
                             }
 
-                            // Tenta dropar power-up
-
                             const drop = tryDropPowerUp(
-                                enemy.type,
-                                enemy.x,
-                                enemy.y
+                                enemy.type, enemy.x, enemy.y
                             );
 
                             if (drop) powerups.push(drop);
 
                             enemy.remove();
-                            enemies.splice(enemyIndex, 1);
+                            enemies.splice(ei, 1);
 
                             score += 10;
-
-                            scoreElement.innerHTML =
-                                `⭐ Score: ${score}`;
+                            scoreElement.innerHTML = `⭐ Score: ${score}`;
                         }
 
-                        projectile.remove();
-                        projectiles.splice(projIndex, 1);
+                        proj.remove();
+                        projectiles.splice(pi, 1);
                     }
                 });
 
-            // Projétil do INIMIGO acerta player
+            } else if (proj.owner === "enemy") {
 
-            } else if (projectile.owner === "enemy") {
+                // God mode — ignora projéteis inimigos
+
+                if (cheats.godMode) return;
 
                 if (
-                    checkCollision(projectile.element, player.element)
+                    checkCollision(proj.element, player.element)
                     && !playerInvulnerable
                 ) {
 
@@ -804,8 +895,7 @@ export function startGame(difficulty = "normal") {
 
                     player.life--;
 
-                    lifeElement.innerHTML =
-                        `❤️ Vida: ${player.life}`;
+                    lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
 
                     player.element.style.opacity = "0.5";
 
@@ -819,33 +909,28 @@ export function startGame(difficulty = "normal") {
 
                     }, 1000);
 
-                    projectile.remove();
-                    projectiles.splice(projIndex, 1);
+                    proj.remove();
+                    projectiles.splice(pi, 1);
 
                     if (player.life <= 0) gameOver();
                 }
             }
         });
 
-        // ======================
         // UPDATE POWER-UPS
-        // ======================
 
-        powerups.forEach((powerup, powerupIndex) => {
+        powerups.forEach((pu, pi) => {
 
-            if (checkCollision(player.element, powerup.element)) {
+            if (checkCollision(player.element, pu.element)) {
 
-                applyPowerUp(powerup.type);
+                applyPowerUp(pu.type);
 
-                powerup.remove();
-
-                powerups.splice(powerupIndex, 1);
+                pu.remove();
+                powerups.splice(pi, 1);
             }
         });
 
-        // ======================
         // PORTA
-        // ======================
 
         if (!waveActive && enemies.length === 0) {
             door.style.display = "block";
@@ -864,9 +949,7 @@ export function startGame(difficulty = "normal") {
     // ======================
 
     function gameLoop() {
-
         update();
-
         requestAnimationFrame(gameLoop);
     }
 

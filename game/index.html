@@ -10,8 +10,6 @@
 
     <title>Dungeon Escape</title>
 
-    <!-- CSS -->
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/game.css">
@@ -46,21 +44,15 @@
 
             <div id="difficulty-buttons">
 
-                <button
-                    class="difficulty-btn"
-                    data-difficulty="easy">
+                <button class="difficulty-btn" data-difficulty="easy">
                     Fácil
                 </button>
 
-                <button
-                    class="difficulty-btn selected"
-                    data-difficulty="normal">
+                <button class="difficulty-btn selected" data-difficulty="normal">
                     Normal
                 </button>
 
-                <button
-                    class="difficulty-btn"
-                    data-difficulty="hard">
+                <button class="difficulty-btn" data-difficulty="hard">
                     Difícil
                 </button>
 
@@ -68,9 +60,46 @@
 
         </div>
 
-        <button id="start-button">
-            Iniciar Jogo
-        </button>
+        <button id="start-button">Iniciar Jogo</button>
+
+        <!-- PAINEL DE CHEATS (escondido, ativado por 3 cliques no título) -->
+
+        <div id="cheat-panel">
+
+            <p class="cheat-panel-title">⚠️ MODO DESENVOLVEDOR ⚠️</p>
+
+            <div class="cheat-buttons">
+
+                <button id="cheat-godmode" class="cheat-btn">
+                    🛡️ God Mode
+                    <span class="cheat-desc">Sem tomar dano</span>
+                </button>
+
+                <button id="cheat-tripleshot" class="cheat-btn">
+                    🔱 Triple Shot
+                    <span class="cheat-desc">Disparo 3x permanente</span>
+                </button>
+
+                <button id="cheat-skipphase" class="cheat-btn cheat-btn-action">
+                    ⏭️ Skip Fase
+                    <span class="cheat-desc">Avança para próxima fase</span>
+                </button>
+
+                <button id="cheat-killall" class="cheat-btn cheat-btn-action">
+                    💀 Matar Todos
+                    <span class="cheat-desc">Elimina inimigos da tela</span>
+                </button>
+
+                <button id="cheat-extralives" class="cheat-btn cheat-btn-action">
+                    ❤️ +5 Vidas
+                    <span class="cheat-desc">Adiciona 5 vidas</span>
+                </button>
+
+            </div>
+
+            <p class="cheat-hint">Clique no título 3x para fechar</p>
+
+        </div>
 
     </div>
 
@@ -78,38 +107,48 @@
 
     <div id="game-container">
 
-        <!-- HUD -->
-
         <div id="hud">
+
+            <div id="life">❤️ Vida: 3</div>
+
+            <div id="score">⭐ Score: 0</div>
+
+            <div id="level">🏰 Fase: 1</div>
 
             <div id="timer">⏱️ 30s</div>
 
-            <div id="life">
-                ❤️ Vida: 3
-            </div>
+            <div id="cheat-hud"></div>
 
-            <div id="score">
-                ⭐ Score: 0
-            </div>
-
-            <div id="level">
-                🏰 Fase: 1
-            </div>
             <div id="powerup-hud"></div>
 
         </div>
 
-        <!-- ÁREA DO JOGO -->
+        <!-- BARRA DE VIDA DO BOSS -->
+
+        <div id="boss-hud">
+
+            <div id="boss-hud-label">👑 BOSS</div>
+
+            <div id="boss-hud-bar-wrapper">
+                <div id="boss-hud-bar"></div>
+            </div>
+
+            <div id="boss-hud-hp">30 / 30</div>
+
+        </div>
 
         <div id="game-area">
 
-            <!-- PLAYER -->
-
             <div id="player"></div>
 
-            <!-- PORTA -->
+            <!-- PORTA CSS -->
 
-            <div id="door"></div>
+            <div id="door">
+                <div class="door-arch"></div>
+                <div class="door-inner"></div>
+                <div class="door-glow"></div>
+                <span class="door-label">SAÍDA</span>
+            </div>
 
         </div>
 
@@ -121,9 +160,7 @@
 
         <h1>PAUSADO</h1>
 
-        <button id="resume-button">
-            Continuar
-        </button>
+        <button id="resume-button">Continuar</button>
 
         <button id="restart-button-pause"
                 onclick="location.reload()">
@@ -140,9 +177,53 @@
 
         <p id="final-score">Pontuação: 0</p>
 
-        <button id="restart-button">
-            Jogar Novamente
-        </button>
+        <button id="restart-button">Jogar Novamente</button>
+
+    </div>
+
+    <!-- CUTSCENE -->
+
+    <div id="cutscene-screen">
+
+        <div id="cutscene-content">
+
+            <p class="cutscene-line" id="cutscene-line-1">O boss caiu...</p>
+
+            <p class="cutscene-line" id="cutscene-line-2">As correntes da dungeon se partem.</p>
+
+            <p class="cutscene-line" id="cutscene-line-3">A luz do dia finalmente alcança seus olhos.</p>
+
+            <p class="cutscene-line" id="cutscene-line-4">Você escapou.</p>
+
+        </div>
+
+    </div>
+
+    <!-- CRÉDITOS -->
+
+    <div id="credits-screen">
+
+        <div id="credits-content">
+
+            <h2 class="credits-title">✦ Dungeon Escape ✦</h2>
+
+            <p class="credits-subtitle">Desenvolvido por</p>
+
+            <div class="credits-names">
+
+                <p class="credits-name">Luis Henrique de Carvalho Ribeiro</p>
+
+                <p class="credits-name">Rebeca Gabrielle Xavier</p>
+
+                <p class="credits-name">Estefany Licinha</p>
+
+            </div>
+
+            <p class="credits-year">2026</p>
+
+            <button id="credits-button">Ver Pontuação</button>
+
+        </div>
 
     </div>
 
@@ -154,17 +235,11 @@
 
         <p id="victory-score">Pontuação: 0</p>
 
-        <p id="new-record">
-            🎉 Novo Recorde!
-        </p>
+        <p id="new-record">🎉 Novo Recorde!</p>
 
-        <button id="victory-restart-button">
-            Jogar Novamente
-        </button>
+        <button id="victory-restart-button">Jogar Novamente</button>
 
     </div>
-
-    <!-- JS -->
 
     <script type="module" src="js/main.js"></script>
 
