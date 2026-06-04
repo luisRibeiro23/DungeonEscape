@@ -93,8 +93,8 @@
 
 #player {
     position: absolute;
-    width: 64px;
-    height: 64px;
+    width: 130px;
+    height: 130px;
     background-size: contain;
     background-repeat: no-repeat;
     image-rendering: pixelated;
@@ -344,8 +344,8 @@
 }
 
 .projectile-default {
-    width: 36px;
-    height: 18px;
+    width: 86px;
+    height: 68px;
     background-image: url("../assets/sprites/project/bullet.png");
     background-size: contain;
     background-repeat: no-repeat;
@@ -354,8 +354,8 @@
 }
 
 .projectile-bone {
-    width: 20px;
-    height: 20px;
+    width: 70px;
+    height: 70px;
     background-image: url("../assets/sprites/project/osso.png");
     background-size: contain;
     background-repeat: no-repeat;
@@ -369,8 +369,8 @@
 }
 
 .projectile-boss-bullet {
-    width: 14px;
-    height: 14px;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
     background: radial-gradient(circle, #ff6600, #880000);
     box-shadow: 0 0 8px rgba(255,68,0,0.8), 0 0 16px rgba(255,68,0,0.4);
