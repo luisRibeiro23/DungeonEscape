@@ -145,6 +145,33 @@ startButton.addEventListener("click", async () => {
 });
 
 window.addEventListener("keydown", (event) => {
+    const key = event.key.toLowerCase();
+
+    if (event.ctrlKey && !event.altKey && !event.metaKey) {
+        switch (key) {
+            case "g":
+                event.preventDefault();
+                toggleCheat("godMode");
+                return;
+            case "y":
+                event.preventDefault();
+                toggleCheat("tripleShot");
+                return;
+            case "s":
+                event.preventDefault();
+                toggleCheat("skipPhase");
+                return;
+            case "k":
+                event.preventDefault();
+                toggleCheat("killAll");
+                return;
+            case "e":
+                event.preventDefault();
+                toggleCheat("extraLives");
+                return;
+        }
+    }
+
     if (
         menuScreen.style.display === "none" ||
         getComputedStyle(menuScreen).display === "none"
@@ -152,14 +179,13 @@ window.addEventListener("keydown", (event) => {
         return;
     }
 
-    const key = event.key;
-    const isMenuKey = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "];
+    const isMenuKey = ["arrowup", "arrowdown", "arrowleft", "arrowright", "enter", " "];
 
     if (!isMenuKey.includes(key)) return;
 
     event.preventDefault();
 
-    if (key === "ArrowLeft") {
+    if (key === "arrowleft") {
         if (menuFocusedIndex < difficultyButtons.length) {
             const nextIndex =
                 (menuFocusedIndex - 1 + difficultyButtons.length) %
@@ -168,7 +194,7 @@ window.addEventListener("keydown", (event) => {
         }
     }
 
-    if (key === "ArrowRight") {
+    if (key === "arrowright") {
         if (menuFocusedIndex < difficultyButtons.length) {
             const nextIndex =
                 (menuFocusedIndex + 1) % difficultyButtons.length;
@@ -176,15 +202,15 @@ window.addEventListener("keydown", (event) => {
         }
     }
 
-    if (key === "ArrowDown") {
+    if (key === "arrowdown") {
         setMenuFocus(Math.min(menuButtons.length - 1, menuFocusedIndex + 1));
     }
 
-    if (key === "ArrowUp") {
+    if (key === "arrowup") {
         setMenuFocus(Math.max(0, menuFocusedIndex - 1));
     }
 
-    if (key === "Enter" || key === " ") {
+    if (key === "enter" || key === " ") {
         menuButtons[menuFocusedIndex].click();
     }
 });

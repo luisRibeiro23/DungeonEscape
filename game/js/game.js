@@ -119,8 +119,6 @@ export function startGame(difficulty = "normal") {
 
             if (!gameRunning || gamePaused) return;
 
-            // Mata todos os inimigos e força próxima fase
-
             [...enemies].forEach((e) => {
                 e.remove();
             });
@@ -137,7 +135,12 @@ export function startGame(difficulty = "normal") {
                 timerElement.classList.remove("urgent");
             }
 
-            door.style.display = "block";
+            if (level >= TOTAL_PHASES) {
+                victory();
+                return;
+            }
+
+            nextLevel();
         },
 
         onKillAll: () => {
@@ -160,7 +163,7 @@ export function startGame(difficulty = "normal") {
 
             if (!gameRunning) return;
 
-            player.life += 5;
+            player.life = Math.min(player.life + 5, 20);
 
             lifeElement.innerHTML =
                 `❤️ Vida: ${player.life}`;
@@ -655,7 +658,7 @@ export function startGame(difficulty = "normal") {
 
         // Triple shot: cheat OU power-up ativo
 
-        if (cheats.tripleShot || activePowerUps["triple-shot"]) {
+        if (cheats.godMode || cheats.tripleShot || activePowerUps["triple-shot"]) {
 
             const angle = Math.atan2(
                 player.lastDirectionY,
