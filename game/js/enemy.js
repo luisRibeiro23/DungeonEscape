@@ -23,8 +23,8 @@ export class Enemy {
             this.speed = 1;
             this.life = 1;
 
-            this.width = 56;
-            this.height = 40;
+            this.width = 106;
+            this.height = 90;
         }
 
         if (type === "slime-mini") {
@@ -32,8 +32,8 @@ export class Enemy {
             this.speed = 1.5;
             this.life = 1;
 
-            this.width = 30;
-            this.height = 22;
+            this.width = 73;
+            this.height = 75;
         }
 
         if (type === "skeleton") {
@@ -41,8 +41,8 @@ export class Enemy {
             this.speed = 2;
             this.life = 2;
 
-            this.width = 56;
-            this.height = 72;
+            this.width = 166;
+            this.height = 172;
 
             this.shootCooldown = 2500;
             this.shootTimer    = 0;
@@ -54,8 +54,8 @@ export class Enemy {
             this.speed = 1.5;
             this.life  = 4;
 
-            this.width  = 72;
-            this.height = 72;
+            this.width  = 175;
+            this.height = 175;
 
             this.dashCooldown = 3000;
             this.dashTimer    = 0;
@@ -71,8 +71,8 @@ export class Enemy {
             this.speed  = 0.8;
             this.life   = 30;
 
-            this.width  = 180;
-            this.height = 200;
+            this.width  = 400;
+            this.height = 420;
 
             this.shootCooldown  = 2000;
             this.shootTimer     = 0;

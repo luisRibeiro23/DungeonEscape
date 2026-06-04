@@ -13,8 +13,8 @@ export class Player {
         this.lastDirectionX = 1;
         this.lastDirectionY = 0;
 
-        this.width = 48;
-        this.height = 48;
+        this.width = 200;
+        this.height = 200;
 
         this.normalSpeed = 5;
 
