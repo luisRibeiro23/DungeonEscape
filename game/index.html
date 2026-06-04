@@ -21,92 +21,62 @@
     <!-- MENU INICIAL -->
 
     <div id="menu-screen">
-
         <div class="menu-title-wrapper">
-
-            <span class="menu-subtitle">— A dungeon awaits —</span>
-
-            <h1>Dungeon Escape</h1>
-
-            <div class="menu-divider"></div>
-
+            <img
+                src="../game/assets/sprites/logo.png"
+                alt="Dungeon Escape"
+                class="game-logo" >
         </div>
 
-        <div id="high-score-display">
-            🏆 High Score: 0
-        </div>
+        <div class="menu-panel">    
+            <div id="high-score-display">
+                🏆 High Score: 0
+            </div>
 
-        <!-- SELEÇÃO DE DIFICULDADE -->
+            <!-- SELEÇÃO DE DIFICULDADE -->
 
-        <div id="difficulty-selector">
+            <div id="difficulty-selector">
 
-            <p>Dificuldade</p>
+                <p>Dificuldade</p>
 
-            <div id="difficulty-buttons">
+                <div id="difficulty-buttons">
 
-                <button class="difficulty-btn" data-difficulty="easy">
-                    Fácil
-                </button>
+                    <button class="difficulty-btn" data-difficulty="easy">
+                        Fácil
+                    </button>
 
-                <button class="difficulty-btn selected" data-difficulty="normal">
-                    Normal
-                </button>
+                    <button class="difficulty-btn selected" data-difficulty="normal">
+                        Normal
+                    </button>
 
-                <button class="difficulty-btn" data-difficulty="hard">
-                    Difícil
-                </button>
+                    <button class="difficulty-btn" data-difficulty="hard">
+                        Difícil
+                    </button>
+
+                </div>
 
             </div>
 
+            <button id="start-button">Iniciar Jogo</button>
         </div>
+    
+        <div id="audio-controls">
 
-        <button id="start-button">Iniciar Jogo</button>
+        <button id="music-toggle" class="audio-btn">
+            <img src="../game/assets/sprites/music.jpeg" alt="Música">
+        </button>
 
-        <!-- PAINEL DE CHEATS (escondido, ativado por 3 cliques no título) -->
-
-        <div id="cheat-panel">
-
-            <p class="cheat-panel-title">⚠️ MODO DESENVOLVEDOR ⚠️</p>
-
-            <div class="cheat-buttons">
-
-                <button id="cheat-godmode" class="cheat-btn">
-                    🛡️ God Mode
-                    <span class="cheat-desc">Sem tomar dano</span>
-                </button>
-
-                <button id="cheat-tripleshot" class="cheat-btn">
-                    🔱 Triple Shot
-                    <span class="cheat-desc">Disparo 3x permanente</span>
-                </button>
-
-                <button id="cheat-skipphase" class="cheat-btn cheat-btn-action">
-                    ⏭️ Skip Fase
-                    <span class="cheat-desc">Avança para próxima fase</span>
-                </button>
-
-                <button id="cheat-killall" class="cheat-btn cheat-btn-action">
-                    💀 Matar Todos
-                    <span class="cheat-desc">Elimina inimigos da tela</span>
-                </button>
-
-                <button id="cheat-extralives" class="cheat-btn cheat-btn-action">
-                    ❤️ +5 Vidas
-                    <span class="cheat-desc">Adiciona 5 vidas</span>
-                </button>
-
-            </div>
-
-            <p class="cheat-hint">Clique no título 3x para fechar</p>
-
-        </div>
+        <button id="sound-toggle" class="audio-btn">
+            <img src="../game/assets/sprites/sound.jpeg" alt="Som">
+        </button>
+    </div>
 
     </div>
 
     <!-- JOGO -->
 
     <div id="game-container">
-
+        
         <div id="hud">
 
             <div id="life">❤️ Vida: 3</div>

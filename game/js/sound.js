@@ -15,6 +15,8 @@ export const musics = {
 
 let currentMusic = null;
 let musicRestoreTimeout = null;
+let musicEnabled = true;
+let soundEnabled = true;
 const musicDefaultVolume = 0.35;
 const musicDuckVolume = 0.08;
 
@@ -33,6 +35,7 @@ function duckMusic(duration = 700) {
 }
 
 export function playSound(name) {
+    if (!soundEnabled) return;
     const sound = sounds[name];
     if (!sound) return;
 
@@ -40,12 +43,8 @@ export function playSound(name) {
     audio.volume = name === "levelUp" ? 1 : 0.85;
 
     if (name === "levelUp") {
-        duckMusic();
-    }
-
-    audio.play().catch(() => {
-        // Ignore play errors from user interaction restrictions.
-    });
+        duckMusic(); }
+    audio.play().catch(() => {});
 }
 
 export function stopMusic() {
@@ -57,9 +56,9 @@ export function stopMusic() {
 }
 
 export function playMusic(name) {
+    if (!musicEnabled) return;
     const music = musics[name];
     if (!music) return;
-
     stopMusic();
 
     music.loop = name !== "victory";
@@ -67,7 +66,37 @@ export function playMusic(name) {
     music.volume = musicDefaultVolume;
 
     currentMusic = music;
-    music.play().catch(() => {
-        // Ignore play errors from user interaction restrictions.
-    });
+
+    music.play().catch(() => {});
+}
+
+export function toggleMusic() {
+    musicEnabled = !musicEnabled;
+    if (!musicEnabled) {
+        stopMusic();}
+    return musicEnabled;
+}
+
+export function toggleSound() {
+    soundEnabled = !soundEnabled;
+    return soundEnabled;
+}
+
+export function isMusicEnabled() {
+    return musicEnabled;
+}
+
+export function isSoundEnabled() {
+    return soundEnabled;
+}
+
+export function playUISound(name) {
+
+    const sound = sounds[name];
+    if (!sound) return;
+
+    const audio = sound.cloneNode(true);
+    audio.volume = 0.85;
+
+    audio.play().catch(() => {});
 }
