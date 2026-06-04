@@ -500,6 +500,32 @@ export function startGame(difficulty = "normal") {
     // WAVE
     // ======================
 
+    function getWaveDuration(level, difficulty) {
+        const levelIndex = Math.max(1, level);
+
+        switch (difficulty) {
+            case "easy":
+                return (45 + (levelIndex - 1) * 30) * 1000;
+            case "hard":
+                return (90 + (levelIndex - 1) * 60) * 1000;
+            default:
+                return (60 + (levelIndex - 1) * 45) * 1000;
+        }
+    }
+
+    function getSpawnCount(level, difficulty) {
+        const levelIndex = Math.max(1, level);
+
+        switch (difficulty) {
+            case "easy":
+                return 7 + (levelIndex - 1) * 7;
+            case "hard":
+                return 15 + (levelIndex - 1) * 12;
+            default:
+                return 12 + (levelIndex - 1) * 10;
+        }
+    }
+
     function startWave() {
 
         const phase = phases[level];
@@ -507,9 +533,8 @@ export function startGame(difficulty = "normal") {
         gameArea.style.backgroundImage =
             `url("assets/sprites/${phase.floor}")`;
 
-        const duration = Math.floor(
-            phase.duration * settings.durationMultiplier
-        );
+        const duration = getWaveDuration(level, difficulty);
+        const spawnCount = getSpawnCount(level, difficulty);
 
         const initialInterval = Math.floor(
             phase.spawnInterval * settings.spawnMultiplier
@@ -521,8 +546,13 @@ export function startGame(difficulty = "normal") {
 
         timeRemaining = duration;
         waveActive    = true;
+        let remainingSpawns = spawnCount;
 
         door.style.display = "none";
+
+        if (timerElement) {
+            timerElement.classList.remove("urgent");
+        }
 
         updateTimerDisplay();
 
@@ -549,41 +579,53 @@ export function startGame(difficulty = "normal") {
                     timerElement.innerHTML = "⏱️ 0s";
                     timerElement.classList.remove("urgent");
                 }
+
+                gameOver();
             }
 
         }, 1000);
 
+        function scheduleNextSpawn(phase, currentInterval, minInterval, totalDuration) {
+
+            if (!waveActive || remainingSpawns <= 0) {
+                if (remainingSpawns <= 0) {
+                    waveActive = false;
+                }
+                return;
+            }
+
+            spawnTimeout = setTimeout(() => {
+
+                if (!gameRunning || !waveActive) return;
+                if (remainingSpawns <= 0) {
+                    waveActive = false;
+                    return;
+                }
+
+                const type =
+                    phase.enemies[
+                        Math.floor(Math.random() * phase.enemies.length)
+                    ];
+
+                spawnEnemy(type);
+                remainingSpawns -= 1;
+
+                const progress = 1 - (timeRemaining / totalDuration);
+
+                const nextInterval = Math.max(
+                    minInterval,
+                    Math.floor(
+                        currentInterval -
+                        (currentInterval - minInterval) * progress * 0.3
+                    )
+                );
+
+                scheduleNextSpawn(phase, nextInterval, minInterval, totalDuration);
+
+            }, currentInterval);
+        }
+
         scheduleNextSpawn(phase, initialInterval, minInterval, duration);
-    }
-
-    function scheduleNextSpawn(phase, currentInterval, minInterval, totalDuration) {
-
-        if (!waveActive) return;
-
-        spawnTimeout = setTimeout(() => {
-
-            if (!gameRunning || !waveActive) return;
-
-            const type =
-                phase.enemies[
-                    Math.floor(Math.random() * phase.enemies.length)
-                ];
-
-            spawnEnemy(type);
-
-            const progress = 1 - (timeRemaining / totalDuration);
-
-            const nextInterval = Math.max(
-                minInterval,
-                Math.floor(
-                    currentInterval -
-                    (currentInterval - minInterval) * progress * 0.3
-                )
-            );
-
-            scheduleNextSpawn(phase, nextInterval, minInterval, totalDuration);
-
-        }, currentInterval);
     }
 
     function updateTimerDisplay() {
@@ -593,6 +635,10 @@ export function startGame(difficulty = "normal") {
         const s = Math.max(0, Math.ceil(timeRemaining / 1000));
 
         timerElement.innerHTML = `⏱️ ${s}s`;
+
+        if (timeRemaining > 10000) {
+            timerElement.classList.remove("urgent");
+        }
     }
 
     startWave();
