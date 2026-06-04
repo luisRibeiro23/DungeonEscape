@@ -11,28 +11,47 @@ const gameContainer    = document.getElementById("game-container");
 const startButton      = document.getElementById("start-button");
 const highScoreDisplay = document.getElementById("high-score-display");
 const difficultyButtons = document.querySelectorAll(".difficulty-btn");
+const menuButtons      = [...difficultyButtons, startButton];
 
 // ======================
 // DIFICULDADE
 // ======================
 
 let selectedDifficulty = "normal";
+let menuFocusedIndex = [...difficultyButtons].findIndex((btn) =>
+    btn.classList.contains("selected")
+);
 
-difficultyButtons.forEach((btn) => {
+if (menuFocusedIndex < 0) {
+    menuFocusedIndex = 0;
+}
+
+function setMenuFocus(index) {
+    if (index < 0) index = 0;
+    if (index >= menuButtons.length) index = menuButtons.length - 1;
+
+    menuFocusedIndex = index;
+    menuButtons[menuFocusedIndex].focus();
+}
+
+function selectDifficultyButton(button) {
+    playSound("menu");
+
+    difficultyButtons.forEach((b) => b.classList.remove("selected"));
+
+    button.classList.add("selected");
+    selectedDifficulty = button.dataset.difficulty;
+}
+
+difficultyButtons.forEach((btn, index) => {
 
     btn.addEventListener("click", () => {
-
-        playSound("menu");
-
-        difficultyButtons.forEach((b) =>
-            b.classList.remove("selected")
-        );
-
-        btn.classList.add("selected");
-
-        selectedDifficulty = btn.dataset.difficulty;
+        selectDifficultyButton(btn);
+        setMenuFocus(index);
     });
 });
+
+setMenuFocus(menuFocusedIndex);
 
 // ======================
 // HIGH SCORE
@@ -123,4 +142,49 @@ startButton.addEventListener("click", async () => {
     const { startGame } = await import("./game.js");
 
     startGame(selectedDifficulty);
+});
+
+window.addEventListener("keydown", (event) => {
+    if (
+        menuScreen.style.display === "none" ||
+        getComputedStyle(menuScreen).display === "none"
+    ) {
+        return;
+    }
+
+    const key = event.key;
+    const isMenuKey = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "];
+
+    if (!isMenuKey.includes(key)) return;
+
+    event.preventDefault();
+
+    if (key === "ArrowLeft") {
+        if (menuFocusedIndex < difficultyButtons.length) {
+            const nextIndex =
+                (menuFocusedIndex - 1 + difficultyButtons.length) %
+                difficultyButtons.length;
+            setMenuFocus(nextIndex);
+        }
+    }
+
+    if (key === "ArrowRight") {
+        if (menuFocusedIndex < difficultyButtons.length) {
+            const nextIndex =
+                (menuFocusedIndex + 1) % difficultyButtons.length;
+            setMenuFocus(nextIndex);
+        }
+    }
+
+    if (key === "ArrowDown") {
+        setMenuFocus(Math.min(menuButtons.length - 1, menuFocusedIndex + 1));
+    }
+
+    if (key === "ArrowUp") {
+        setMenuFocus(Math.max(0, menuFocusedIndex - 1));
+    }
+
+    if (key === "Enter" || key === " ") {
+        menuButtons[menuFocusedIndex].click();
+    }
 });

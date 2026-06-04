@@ -784,10 +784,10 @@ export function startGame(difficulty = "normal") {
 
         let dx = 0, dy = 0;
 
-        if (keys["w"]) dy -= player.speed;
-        if (keys["s"]) dy += player.speed;
-        if (keys["a"]) dx -= player.speed;
-        if (keys["d"]) dx += player.speed;
+        if (keys["w"] || keys["arrowup"]) dy -= player.speed;
+        if (keys["s"] || keys["arrowdown"]) dy += player.speed;
+        if (keys["a"] || keys["arrowleft"]) dx -= player.speed;
+        if (keys["d"] || keys["arrowright"]) dx += player.speed;
 
         player.move(dx, dy);
 
