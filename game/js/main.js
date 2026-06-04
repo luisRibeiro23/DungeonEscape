@@ -1,11 +1,20 @@
 import { getHighScore } from "./storage.js";
 import { toggleCheat } from "./cheat.js";
-import { playSound } from "./sound.js";
+import {
+    playSound,
+    playUISound,
+    toggleMusic,
+    toggleSound
+} from "./sound.js";
 
 // ======================
 // ELEMENTOS
 // ======================
 
+const musicBtn = document.getElementById("music-toggle");
+const soundBtn = document.getElementById("sound-toggle");
+const musicImg = musicBtn.querySelector("img");
+const soundImg = soundBtn.querySelector("img");
 const menuScreen       = document.getElementById("menu-screen");
 const gameContainer    = document.getElementById("game-container");
 const startButton      = document.getElementById("start-button");
@@ -65,7 +74,7 @@ highScoreDisplay.innerHTML =
 // Ativado por 3 cliques no título
 // ======================
 
-const title      = document.querySelector("#menu-screen h1");
+const title      = document.querySelector(".game-logo");
 const cheatPanel = document.getElementById("cheat-panel");
 
 let clickCount  = 0;
@@ -108,7 +117,7 @@ title.addEventListener("click", () => {
 // ======================
 // BOTÕES DE CHEAT
 // ======================
-
+/*
 document
     .getElementById("cheat-godmode")
     .addEventListener("click", () => toggleCheat("godMode"));
@@ -128,6 +137,7 @@ document
 document
     .getElementById("cheat-extralives")
     .addEventListener("click", () => toggleCheat("extraLives"));
+*/
 
 // ======================
 // START GAME
@@ -213,4 +223,26 @@ window.addEventListener("keydown", (event) => {
     if (key === "enter" || key === " ") {
         menuButtons[menuFocusedIndex].click();
     }
+});
+
+// ======================
+// BOTÕES DE SOM E MUSICA
+// ======================
+
+musicBtn.addEventListener("click", () => {
+    playUISound("menu");
+    const enabled = toggleMusic();
+
+    musicImg.src = enabled
+        ? "../game/assets/sprites/music.jpeg"
+        : "../game/assets/sprites/noMusic.jpeg";
+});
+
+soundBtn.addEventListener("click", () => {
+    playUISound("menu");
+    const enabled = toggleSound();
+
+    soundImg.src = enabled
+        ? "../game/assets/sprites/sound.jpeg"
+        : "../game/assets/sprites/noSound.jpeg";
 });
