@@ -16,6 +16,7 @@ export const cheats = {
 let _onSkipPhase = null;
 let _onKillAll   = null;
 let _onExtraLives = null;
+let _godModeRestoresTripleShot = false;
 
 export function registerCheatCallbacks({ onSkipPhase, onKillAll, onExtraLives }) {
     _onSkipPhase  = onSkipPhase;
@@ -32,14 +33,24 @@ export function toggleCheat(type) {
     switch (type) {
 
         case "godMode":
-            cheats.godMode = !cheats.godMode;
+            if (!cheats.godMode) {
+                _godModeRestoresTripleShot = !cheats.tripleShot;
+                cheats.godMode = true;
+                cheats.tripleShot = true;
+            } else {
+                cheats.godMode = false;
+                if (_godModeRestoresTripleShot) {
+                    cheats.tripleShot = false;
+                }
+            }
             updateCheatButton("cheat-godmode", cheats.godMode);
+            updateCheatButton("cheat-tripleshot", cheats.tripleShot || cheats.godMode);
             updateCheatHUD();
             break;
 
         case "tripleShot":
             cheats.tripleShot = !cheats.tripleShot;
-            updateCheatButton("cheat-tripleshot", cheats.tripleShot);
+            updateCheatButton("cheat-tripleshot", cheats.tripleShot || cheats.godMode);
             updateCheatHUD();
             break;
 
@@ -102,7 +113,7 @@ function updateCheatHUD() {
     const active = [];
 
     if (cheats.godMode)    active.push("GOD");
-    if (cheats.tripleShot) active.push("3x");
+    if (cheats.godMode || cheats.tripleShot) active.push("3x");
 
     hud.innerHTML = active.length > 0
         ? active.map(c => `<span class="cheat-hud-tag">${c}</span>`).join("")
