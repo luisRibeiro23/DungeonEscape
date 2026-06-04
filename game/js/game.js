@@ -6,6 +6,7 @@ import { PowerUp, tryDropPowerUp, powerupTypes } from "./powerup.js";
 import { saveHighScore } from "./storage.js";
 import { phases, TOTAL_PHASES } from "./level.js";
 import { cheats, registerCheatCallbacks } from "./cheat.js";
+import { playSound, playMusic, stopMusic } from "./sound.js";
 
 // ======================
 // DIFICULDADE
@@ -260,6 +261,9 @@ export function startGame(difficulty = "normal") {
         clearTimeout(spawnTimeout);
         clearInterval(timerInterval);
 
+        stopMusic();
+        playMusic("victory");
+
         const isNewRecord = saveHighScore(score);
 
         playCutscene(() => {
@@ -316,6 +320,8 @@ export function startGame(difficulty = "normal") {
         clearInterval(timerInterval);
 
         hideBossHud();
+        stopMusic();
+        playSound("death");
 
         saveHighScore(score);
 
@@ -383,7 +389,10 @@ export function startGame(difficulty = "normal") {
 
             enemies.push(enemy);
 
-            if (type === "boss") showBossHud(enemy);
+            if (type === "boss") {
+            showBossHud(enemy);
+            playMusic("boss");
+        }
         });
     }
 
@@ -584,6 +593,7 @@ export function startGame(difficulty = "normal") {
     }
 
     startWave();
+    playMusic("game");
 
     // ======================
     // NEXT LEVEL
@@ -605,6 +615,7 @@ export function startGame(difficulty = "normal") {
 
         levelElement.innerHTML = `🏰 Fase: ${level}`;
 
+        playSound("levelUp");
         door.style.display = "none";
 
         startWave();
@@ -671,6 +682,8 @@ export function startGame(difficulty = "normal") {
                 "player", "default"
             ));
         }
+
+        playSound("attack");
 
         setTimeout(() => { canShoot = true; }, shootCooldown);
     }
@@ -802,6 +815,7 @@ export function startGame(difficulty = "normal") {
                 playerInvulnerable = true;
 
                 player.life--;
+                playSound("hit");
 
                 lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
 
@@ -894,6 +908,7 @@ export function startGame(difficulty = "normal") {
                     playerInvulnerable = true;
 
                     player.life--;
+                    playSound("hit");
 
                     lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
 
@@ -924,6 +939,7 @@ export function startGame(difficulty = "normal") {
             if (checkCollision(player.element, pu.element)) {
 
                 applyPowerUp(pu.type);
+                playSound("pickup");
 
                 pu.remove();
                 powerups.splice(pi, 1);

@@ -1,5 +1,6 @@
 import { getHighScore } from "./storage.js";
 import { toggleCheat } from "./cheat.js";
+import { playSound } from "./sound.js";
 
 // ======================
 // ELEMENTOS
@@ -20,6 +21,8 @@ let selectedDifficulty = "normal";
 difficultyButtons.forEach((btn) => {
 
     btn.addEventListener("click", () => {
+
+        playSound("menu");
 
         difficultyButtons.forEach((b) =>
             b.classList.remove("selected")
