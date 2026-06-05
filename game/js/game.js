@@ -293,7 +293,6 @@ export function startGame(difficulty = "normal") {
     // ======================
 
     function killBoss(boss, index) {
-
         boss.element.classList.remove("enemy-boss");
         boss.element.classList.add("boss-dying");
 
@@ -308,6 +307,8 @@ export function startGame(difficulty = "normal") {
             score += 100;
 
             scoreElement.innerHTML = `⭐ Score: ${score}`;
+
+            waveActive = false;
 
             victory();
 
@@ -549,6 +550,12 @@ export function startGame(difficulty = "normal") {
     function startWave() {
 
         const phase = phases[level];
+
+        if (phase.enemies.includes("boss")) {
+            spawnEnemy("boss");
+            waveActive = true;
+            return;
+        }
 
         gameArea.style.backgroundImage =
             `url("assets/sprites/${phase.floor}")`;
