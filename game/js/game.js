@@ -57,6 +57,10 @@ export function startGame(difficulty = "normal") {
         "speed":       false,
         "heart":       false,
     };
+    // Guarda timeouts de expiração por tipo para que possamos
+    // cancelar e reaplicar corretamente quando o player coletar
+    // o mesmo power-up em sequência.
+    const powerupTimeouts = {};
 
     const enemies     = [];
     const projectiles = [];
@@ -473,7 +477,13 @@ export function startGame(difficulty = "normal") {
         }
 
         if (type !== "heart") {
-            setTimeout(() => {
+            // Se já houver um timeout para este tipo, cancele-o
+            // para que a nova coleta reinicie a duração.
+            if (powerupTimeouts[type]) {
+                clearTimeout(powerupTimeouts[type]);
+            }
+
+            powerupTimeouts[type] = setTimeout(() => {
 
                 activePowerUps[type] = false;
 
@@ -486,6 +496,9 @@ export function startGame(difficulty = "normal") {
                     playerInvulnerable = false;
                     player.element.classList.remove("shield-active");
                 }
+
+                // Limpe a referência ao timeout expirado
+                delete powerupTimeouts[type];
 
             }, config.duration);
         }
