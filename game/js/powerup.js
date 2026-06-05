@@ -27,6 +27,13 @@ export const powerupTypes = {
         color: "#a0ff60",
         duration: 6000,
         dropChance: 0.12
+    },
+
+    "heart": {
+        label: "❤️",
+        color: "#ff5c7a",
+        duration: 2500,
+        dropChance: 0.1
     }
 };
 
@@ -101,13 +108,22 @@ export function tryDropPowerUp(enemyType, x, y) {
 
     // Outros inimigos: chance aleatória por tipo
 
+    const possibleDrops = [];
+
     for (const [type, config] of Object.entries(powerupTypes)) {
 
         if (Math.random() < config.dropChance) {
-
-            return new PowerUp(type, x, y);
+            possibleDrops.push(type);
         }
     }
 
-    return null;
+    if (possibleDrops.length === 0) {
+        return null;
+    }
+
+    const type = possibleDrops[
+        Math.floor(Math.random() * possibleDrops.length)
+    ];
+
+    return new PowerUp(type, x, y);
 }
