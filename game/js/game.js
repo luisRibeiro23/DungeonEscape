@@ -743,9 +743,9 @@ export function startGame(difficulty = "normal") {
         const cx = player.x + 16;
         const cy = player.y + 16;
 
-        // Triple shot: cheat OU power-up ativo
+        // Triple shot: cheat tripleShot OU power-up ativo
 
-        if (cheats.godMode || cheats.tripleShot || activePowerUps["triple-shot"]) {
+        if (cheats.tripleShot || activePowerUps["triple-shot"]) {
 
             const angle = Math.atan2(
                 player.lastDirectionY,
