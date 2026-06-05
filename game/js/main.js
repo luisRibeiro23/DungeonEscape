@@ -1,10 +1,12 @@
-import { getHighScore } from "./storage.js";
+import { getHighScore } from "./storage.js?v=1";
 import { toggleCheat } from "./cheat.js";
 import {
     playSound,
     playUISound,
     toggleMusic,
-    toggleSound
+    toggleSound,
+    isMusicEnabled,
+    isSoundEnabled
 } from "./sound.js";
 
 // ======================
@@ -13,8 +15,16 @@ import {
 
 const musicBtn = document.getElementById("music-toggle");
 const soundBtn = document.getElementById("sound-toggle");
-const musicImg = musicBtn.querySelector("img");
-const soundImg = soundBtn.querySelector("img");
+const musicImg = musicBtn?.querySelector("img");
+const soundImg = soundBtn?.querySelector("img");
+const helpButtonMain = document.getElementById("help-button-main");
+const helpButtonPause = document.getElementById("help-button-pause");
+const instructionsOverlay = document.getElementById("instructions-overlay");
+const instructionsClose = document.getElementById("instructions-close");
+const pauseMusicBtn = document.getElementById("pause-music-toggle");
+const pauseSoundBtn = document.getElementById("pause-sound-toggle");
+const pauseMusicImg = pauseMusicBtn?.querySelector("img");
+const pauseSoundImg = pauseSoundBtn?.querySelector("img");
 const menuScreen       = document.getElementById("menu-screen");
 const gameContainer    = document.getElementById("game-container");
 const startButton      = document.getElementById("start-button");
@@ -68,6 +78,71 @@ setMenuFocus(menuFocusedIndex);
 
 highScoreDisplay.innerHTML =
     `🏆 High Score: ${getHighScore()}`;
+
+function updateAudioButtons() {
+    const musicEnabled = isMusicEnabled();
+    const soundEnabled = isSoundEnabled();
+
+    const musicSrc = musicEnabled
+        ? "../game/assets/sprites/music.jpeg"
+        : "../game/assets/sprites/noMusic.jpeg";
+
+    const soundSrc = soundEnabled
+        ? "../game/assets/sprites/sound.jpeg"
+        : "../game/assets/sprites/noSound.jpeg";
+
+    if (musicImg) musicImg.src = musicSrc;
+    if (soundImg) soundImg.src = soundSrc;
+    if (pauseMusicImg) pauseMusicImg.src = musicSrc;
+    if (pauseSoundImg) pauseSoundImg.src = soundSrc;
+}
+
+function showInstructions() {
+    if (instructionsOverlay) {
+        instructionsOverlay.style.display = "flex";
+    }
+}
+
+function hideInstructions() {
+    if (instructionsOverlay) {
+        instructionsOverlay.style.display = "none";
+    }
+}
+
+helpButtonMain?.addEventListener("click", showInstructions);
+helpButtonPause?.addEventListener("click", showInstructions);
+instructionsClose?.addEventListener("click", hideInstructions);
+instructionsOverlay?.addEventListener("click", (event) => {
+    if (event.target === instructionsOverlay) {
+        hideInstructions();
+    }
+});
+
+musicBtn?.addEventListener("click", () => {
+    playUISound("menu");
+    toggleMusic();
+    updateAudioButtons();
+});
+
+soundBtn?.addEventListener("click", () => {
+    playUISound("menu");
+    toggleSound();
+    updateAudioButtons();
+});
+
+pauseMusicBtn?.addEventListener("click", () => {
+    playUISound("menu");
+    toggleMusic();
+    updateAudioButtons();
+});
+
+pauseSoundBtn?.addEventListener("click", () => {
+    playUISound("menu");
+    toggleSound();
+    updateAudioButtons();
+});
+
+updateAudioButtons();
 
 // ======================
 // PAINEL DE CHEATS
@@ -225,24 +300,3 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-// ======================
-// BOTÕES DE SOM E MUSICA
-// ======================
-
-musicBtn.addEventListener("click", () => {
-    playUISound("menu");
-    const enabled = toggleMusic();
-
-    musicImg.src = enabled
-        ? "../game/assets/sprites/music.jpeg"
-        : "../game/assets/sprites/noMusic.jpeg";
-});
-
-soundBtn.addEventListener("click", () => {
-    playUISound("menu");
-    const enabled = toggleSound();
-
-    soundImg.src = enabled
-        ? "../game/assets/sprites/sound.jpeg"
-        : "../game/assets/sprites/noSound.jpeg";
-});

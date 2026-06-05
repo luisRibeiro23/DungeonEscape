@@ -219,7 +219,8 @@
    SOM E MÚSICA
    ====================== */
 
-#audio-controls {
+#audio-controls,
+#pause-audio-controls {
     display: flex;
     justify-content:center;
     gap: 25px;
@@ -241,6 +242,98 @@
     width: 60px;
     height: 60px;
     image-rendering: pixelated;
+}
+
+.help-btn {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    z-index: 10;
+}
+
+.help-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pause-help-btn {
+    top: 20px;
+    right: 20px;
+}
+
+#instructions-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 10000;
+    padding: 20px;
+}
+
+#instructions-box {
+    position: relative;
+    width: min(780px, 90vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 40px 36px 32px;
+    background-image: url("../assets/sprites/inst-scroll.png");
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 0 6px rgba(0,0,0,0.4), 0 20px 50px rgba(0,0,0,0.35);
+    text-align: center;
+}
+
+#instructions-box h2 {
+    margin: 0 0 18px;
+    font-family: var(--font-title) !important;
+    font-size: 32px;
+    color: #452a08;
+    text-shadow: 0 0 8px rgba(255,255,255,0.35);
+}
+
+#instructions-box ul {
+    list-style: disc inside;
+    margin: 0 auto;
+    padding: 0;
+    display: inline-block;
+    text-align: left;
+    font-family: var(--font-body) !important;
+    font-size: 16px;
+    color: #462f0f;
+    line-height: 1.7;
+    max-width: 92%;
+}
+
+#instructions-box li {
+    margin-bottom: 12px;
+}
+
+#instructions-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: rgba(0,0,0,0.45);
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+#instructions-close:hover {
+    background: rgba(0,0,0,0.65);
 }
 
 /* ======================
