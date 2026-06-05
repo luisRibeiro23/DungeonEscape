@@ -21,6 +21,10 @@
     <!-- MENU INICIAL -->
 
     <div id="menu-screen">
+        <button id="help-button-main" class="help-btn">
+            <img src="../game/assets/sprites/question_mark.png" alt="Ajuda">
+        </button>
+
         <div class="menu-title-wrapper">
             <img
                 src="../game/assets/sprites/logo.png"
@@ -76,20 +80,26 @@
     <!-- JOGO -->
 
     <div id="game-container">
-        
+
         <div id="hud">
 
-            <div id="life">❤️ Vida: 3</div>
+            <div id="hud-left">
+                <button id="pause-button" class="pause-btn" aria-label="Pausar jogo">
+                    <img src="../game/assets/sprites/back.png" alt="Voltar">
+                </button>
 
-            <div id="score">⭐ Score: 0</div>
+                <div id="hud-info">
+                    <div id="life">❤️ Vida: 3</div>
+                    <div id="score">⭐ Score: 0</div>
+                    <div id="level">🏰 Fase: 1</div>
+                    <div id="timer">⏱️ 30s</div>
+                </div>
+            </div>
 
-            <div id="level">🏰 Fase: 1</div>
-
-            <div id="timer">⏱️ 30s</div>
-
-            <div id="cheat-hud"></div>
-
-            <div id="powerup-hud"></div>
+            <div id="hud-right">
+                <div id="cheat-hud"></div>
+                <div id="powerup-hud"></div>
+            </div>
 
         </div>
 
@@ -127,10 +137,22 @@
     <!-- PAUSA -->
 
     <div id="pause-screen">
+        <button id="help-button-pause" class="help-btn pause-help-btn">
+            <img src="../game/assets/sprites/question_mark.png" alt="Ajuda">
+        </button>
 
         <h1>PAUSADO</h1>
 
         <button id="resume-button">Continuar</button>
+
+        <div id="pause-audio-controls">
+            <button id="pause-music-toggle" class="audio-btn">
+                <img src="../game/assets/sprites/music.jpeg" alt="Música">
+            </button>
+            <button id="pause-sound-toggle" class="audio-btn">
+                <img src="../game/assets/sprites/sound.jpeg" alt="Som">
+            </button>
+        </div>
 
         <button id="restart-button-pause"
                 onclick="location.reload()">
@@ -195,6 +217,25 @@
 
         </div>
 
+    </div>
+
+    <!-- INSTRUÇÕES -->
+
+    <div id="instructions-overlay">
+        <div id="instructions-box">
+            <button id="instructions-close" class="close-btn">×</button>
+            <h2>Instruções</h2>
+            <ul>
+                <li>Use <strong>WASD</strong> ou <strong>setas</strong> para mover.</li>
+                <li><strong>Espaço</strong> para atirar e <strong>Shift</strong> para dash.</li>
+                <li><strong>Esc</strong> pausa o jogo e abre o menu de pause.</li>
+                <li><strong>Ctrl+G</strong> ativa/desativa God Mode.</li>
+                <li><strong>Ctrl+Y</strong> ativa/desativa Triple Shot.</li>
+                <li><strong>Ctrl+S</strong> pula a fase atual.</li>
+                <li><strong>Ctrl+K</strong> mata todos os inimigos da tela.</li>
+                <li><strong>Ctrl+E</strong> dá +5 vidas até o máximo de 20.</li>
+            </ul>
+        </div>
     </div>
 
     <!-- VITÓRIA -->

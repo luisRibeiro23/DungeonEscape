@@ -1,3 +1,5 @@
+import { getAudioPreferences, saveAudioPreferences } from "./storage.js?v=1";
+
 export const sounds = {
     attack: new Audio('assets/sprites/sound/sfx/gun-shot.mp3'),
     hit: new Audio('assets/sprites/sound/sfx/hurt.mp3'),
@@ -19,6 +21,32 @@ let musicEnabled = true;
 let soundEnabled = true;
 const musicDefaultVolume = 0.35;
 const musicDuckVolume = 0.08;
+
+function loadAudioPreferences() {
+    try {
+        const prefs = getAudioPreferences();
+
+        musicEnabled = prefs.musicEnabled;
+        soundEnabled = prefs.soundEnabled;
+    } catch (error) {
+        console.warn("Falha ao carregar preferências de áudio:", error);
+        musicEnabled = true;
+        soundEnabled = true;
+    }
+}
+
+function saveAudioPreferencesState() {
+    try {
+        saveAudioPreferences({
+            musicEnabled,
+            soundEnabled,
+        });
+    } catch (error) {
+        console.warn("Falha ao salvar preferências de áudio:", error);
+    }
+}
+
+loadAudioPreferences();
 
 function duckMusic(duration = 700) {
     if (!currentMusic) return;
@@ -72,13 +100,16 @@ export function playMusic(name) {
 
 export function toggleMusic() {
     musicEnabled = !musicEnabled;
+    saveAudioPreferencesState();
     if (!musicEnabled) {
-        stopMusic();}
+        stopMusic();
+    }
     return musicEnabled;
 }
 
 export function toggleSound() {
     soundEnabled = !soundEnabled;
+    saveAudioPreferencesState();
     return soundEnabled;
 }
 
@@ -91,6 +122,7 @@ export function isSoundEnabled() {
 }
 
 export function playUISound(name) {
+    if (!soundEnabled) return;
 
     const sound = sounds[name];
     if (!sound) return;

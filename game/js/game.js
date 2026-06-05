@@ -3,7 +3,7 @@ import { keys } from "./input.js";
 import { Enemy } from "./enemy.js";
 import { Projectile } from "./projectile.js";
 import { PowerUp, tryDropPowerUp, powerupTypes } from "./powerup.js";
-import { saveHighScore } from "./storage.js";
+import { saveHighScore } from "./storage.js?v=1";
 import { phases, TOTAL_PHASES } from "./level.js";
 import { cheats, registerCheatCallbacks } from "./cheat.js";
 import { playSound, playMusic, stopMusic } from "./sound.js";
@@ -77,6 +77,7 @@ export function startGame(difficulty = "normal") {
     // Telas
 
     const gameContainer        = document.getElementById("game-container");
+    const pauseButton          = document.getElementById("pause-button");
     const gameArea             = document.getElementById("game-area");
     const gameOverScreen       = document.getElementById("game-over-screen");
     const victoryScreen        = document.getElementById("victory-screen");
@@ -88,6 +89,7 @@ export function startGame(difficulty = "normal") {
     const resumeButton         = document.getElementById("resume-button");
     const creditsButton        = document.getElementById("credits-button");
     const door                 = document.getElementById("door");
+    const instructionsOverlay  = document.getElementById("instructions-overlay");
     const finalScoreElement    = document.getElementById("final-score");
     const victoryScoreElement  = document.getElementById("victory-score");
     const newRecordElement     = document.getElementById("new-record");
@@ -341,6 +343,15 @@ export function startGame(difficulty = "normal") {
     function togglePause() {
 
         if (!gameRunning) return;
+
+        if (
+            instructionsOverlay &&
+            instructionsOverlay.style.display !== "none" &&
+            getComputedStyle(instructionsOverlay).display !== "none"
+        ) {
+            instructionsOverlay.style.display = "none";
+            return;
+        }
 
         gamePaused = !gamePaused;
 
@@ -685,6 +696,7 @@ export function startGame(difficulty = "normal") {
         ) togglePause();
     });
 
+    pauseButton?.addEventListener("click", () => togglePause());
     resumeButton.addEventListener("click",         () => togglePause());
     restartButton.addEventListener("click",        () => location.reload());
     victoryRestartButton.addEventListener("click", () => location.reload());
