@@ -73,7 +73,12 @@
         <button id="sound-toggle" class="audio-btn">
             <img src="../game/assets/sprites/sound.jpeg" alt="Som">
         </button>
-    </div>
+        </div>
+
+        <button id="character-button">
+            <img src="../game/assets/sprites/changeSkin.png" alt="Alterar Personagem">
+        </button>
+
 
     </div>
 
@@ -249,6 +254,50 @@
         <p id="new-record">🎉 Novo Recorde!</p>
 
         <button id="victory-restart-button">Jogar Novamente</button>
+
+    </div>
+
+    <div id="character-overlay">
+        <div id="character-box">
+
+            <button id="character-close">✖</button>
+
+            <h2>Selecione seu personagem</h2>
+
+            <div id="character-list">
+
+                <button class="character-card"
+                        data-skin="default"
+                        data-required-score="0">
+                    <img src="assets/sprites/player/player-south.png">
+                    <span>Cowboy</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin1"
+                        data-required-score="200">
+                    <img src="assets/sprites/player/skin1/player-south.png">
+                    <span>Cowgirl</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin2"
+                        data-required-score="350">
+                    <img src="assets/sprites/player/skin2/player-south.png">
+                    <span>Professor</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin3"
+                        data-required-score="600">
+                    <img src="assets/sprites/player/skin3/player-south.png">
+                    <span>Exploradora</span>
+                </button>
+
+
+            </div>
+
+        </div>
 
     </div>
 

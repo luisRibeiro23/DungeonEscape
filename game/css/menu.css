@@ -556,3 +556,114 @@
         transform: translateY(0);
     }
 }
+
+/* ======================
+   BOTÃO DE PERSONAGEM
+   ====================== */
+
+#character-button{
+    position: absolute;
+
+    bottom: 20px;
+    left: 20px;
+
+    width: 70px;
+    height: 70px;
+
+    border: black 2px solid;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    padding: 8px;
+
+    transition: transform 0.2s ease;
+}
+
+#character-button:hover{
+    transform: scale(1.1);
+}
+
+#character-button img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+/* ======================
+   JANELA BOTÃO DE PERSONAGEM
+   ====================== */
+
+#character-overlay{
+    position:fixed;
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.7);
+
+    z-index:9999;
+}
+
+#character-box{
+    width:700px;
+
+    padding:30px;
+
+    background:#2b1403;
+
+    border:4px solid #835c39;
+
+    border-radius:15px;
+
+    position:relative;
+}
+
+#character-close{
+    position:absolute;
+
+    top:10px;
+    right:10px;
+
+    cursor:pointer;
+}
+
+#character-list{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:20px;
+}
+
+#character-box h2{
+    color: rgb(192, 183, 168);
+}
+.character-card{
+    width:150px;
+
+    padding:15px;
+
+    background:#8d7152;
+
+    border:2px solid #523318;
+
+    cursor:pointer;
+}
+
+.character-card img{
+    width:100px;
+    image-rendering:pixelated;
+}
+
+.character-card.locked{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+.character-card.selected{
+    border-color:gold;
+}

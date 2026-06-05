@@ -1,9 +1,15 @@
+import { getCharacter } from "./storage.js";
+
 export class Player {
 
     constructor(life = 32222) {
 
         this.element =
             document.getElementById("player");
+
+        this.character = getCharacter();
+
+        console.log("Personagem carregado:", this.character);
 
         this.life = life;
 
@@ -200,6 +206,6 @@ export class Player {
                 : "-1";
 
         this.element.style.backgroundImage =
-            `url("assets/sprites/player/player-${this.direction}${frameSuffix}.png")`;
+            `url("assets/sprites/player/${this.character}/player-${this.direction}${frameSuffix}.png")`;
     }
 }

@@ -1,4 +1,3 @@
-import { getHighScore } from "./storage.js?v=1";
 import { toggleCheat } from "./cheat.js";
 import {
     playSound,
@@ -8,6 +7,11 @@ import {
     isMusicEnabled,
     isSoundEnabled
 } from "./sound.js";
+import {
+    getHighScore,
+    saveCharacter,
+    getCharacter
+} from "./storage.js?v=1";
 
 // ======================
 // ELEMENTOS
@@ -76,8 +80,80 @@ setMenuFocus(menuFocusedIndex);
 // HIGH SCORE
 // ======================
 
+const highScore = getHighScore();
+
 highScoreDisplay.innerHTML =
-    `🏆 High Score: ${getHighScore()}`;
+    `🏆 High Score: ${highScore}`;
+
+document
+    .querySelectorAll(".character-card")
+    .forEach(card => {
+
+        const required =
+            Number(card.dataset.requiredScore || 0);
+
+        if (highScore < required) {
+
+            card.classList.add("locked");
+
+            const status =
+                document.createElement("p");
+
+            status.textContent =
+                `🔒 ${required} pts`;
+
+            card.appendChild(status);
+        }
+    });
+
+const selectedCharacter = getCharacter();
+
+document
+    .querySelectorAll(".character-card")
+    .forEach(card => {
+
+        if (card.dataset.skin === selectedCharacter) {
+            card.classList.add("selected");
+        }
+    }); 
+
+document
+    .querySelectorAll(".character-card")
+    .forEach(card => {
+
+        card.addEventListener("click", () => {
+
+            if (card.classList.contains("locked")) {
+                return;
+            }
+
+            document
+                .querySelectorAll(".character-card")
+                .forEach(c =>
+                    c.classList.remove("selected")
+                );
+
+            card.classList.add("selected");
+
+            saveCharacter(
+                card.dataset.skin
+            );
+            console.log("Salvo:", card.dataset.skin);
+        });
+    });   
+
+document
+    .querySelectorAll("button")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+            playUISound("menu");
+        });
+    });
+
+// ======================
+// SOM e MÚSICA
+// ======================
 
 function updateAudioButtons() {
     const musicEnabled = isMusicEnabled();
@@ -300,3 +376,37 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+// ======================
+// SKIN SELECTION
+// ======================
+
+const characterButton =
+    document.getElementById("character-button");
+
+const characterOverlay =
+    document.getElementById("character-overlay");
+
+const characterClose =
+    document.getElementById("character-close");
+
+    characterButton.addEventListener("click", () => {
+    characterOverlay.style.display = "flex";
+});
+
+characterClose.addEventListener("click", () => {
+    characterOverlay.style.display = "none";
+});
+
+characterButton.addEventListener("click", () => {
+
+    playUISound("menu");
+
+    characterOverlay.style.display = "flex";
+});
+
+characterClose.addEventListener("click", () => {
+
+    playUISound("menu");
+
+    characterOverlay.style.display = "none";
+});
