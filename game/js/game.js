@@ -55,6 +55,7 @@ export function startGame(difficulty = "normal") {
         "triple-shot": false,
         "shield":      false,
         "speed":       false,
+        "heart":       false,
     };
 
     const enemies     = [];
@@ -464,21 +465,29 @@ export function startGame(difficulty = "normal") {
             player.element.classList.add("shield-active");
         }
 
-        setTimeout(() => {
-
+        if (type === "heart") {
+            player.life = Math.min(player.life + 1, 20);
+            lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
             activePowerUps[type] = false;
+        }
 
-            if (type === "speed") {
-                player.normalSpeed = 5;
-                if (!player.isDashing) player.speed = 5;
-            }
+        if (type !== "heart") {
+            setTimeout(() => {
 
-            if (type === "shield") {
-                playerInvulnerable = false;
-                player.element.classList.remove("shield-active");
-            }
+                activePowerUps[type] = false;
 
-        }, config.duration);
+                if (type === "speed") {
+                    player.normalSpeed = 5;
+                    if (!player.isDashing) player.speed = 5;
+                }
+
+                if (type === "shield") {
+                    playerInvulnerable = false;
+                    player.element.classList.remove("shield-active");
+                }
+
+            }, config.duration);
+        }
     }
 
     function showPowerUpHUD(type, duration) {
