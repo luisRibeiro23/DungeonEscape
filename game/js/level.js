@@ -9,6 +9,7 @@ export const phases = {
     1: {
         floor: "pantano.png",
         enemies: ["slime"],
+        boss: "boss1",
         duration: 30000,
         spawnInterval: 4000,
         spawnIntervalMin: 1500,
@@ -17,6 +18,7 @@ export const phases = {
     2: {
         floor: "catacumba.png",
         enemies: ["skeleton"],
+        boss: "boss2",
         duration: 40000,
         spawnInterval: 3500,
         spawnIntervalMin: 1200,
@@ -25,6 +27,7 @@ export const phases = {
     3: {
         floor: "inferno.png",
         enemies: ["demon"],
+        boss: "boss",
         duration: 45000,
         spawnInterval: 3000,
         spawnIntervalMin: 1000,
@@ -33,14 +36,7 @@ export const phases = {
     4: {
         floor: "mista.png",
         enemies: ["slime", "skeleton", "demon"],
-        duration: 55000,
-        spawnInterval: 2500,
-        spawnIntervalMin: 800,
-    },
-
-    5: {
-        floor: "bossRoom.png",
-        enemies: ["boss"],
+        boss: "bossFinal",
         duration: 60000,
         spawnInterval: 8000,
         spawnIntervalMin: 5000,

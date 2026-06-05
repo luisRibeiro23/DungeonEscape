@@ -39,6 +39,13 @@ const difficultySettings = {
     }
 };
 
+const phaseBosses = {
+    1: "boss1",
+    2: "boss2",
+    3: "boss3",
+    4: "bossFinal"
+};
+
 // ======================
 // FUNÇÃO PRINCIPAL
 // ======================
@@ -110,6 +117,10 @@ export function startGame(difficulty = "normal") {
     let canDash            = true;
     const dashCooldown     = 1000;
     let bossRef            = null;
+    let bossFight          = false;
+    let bossSpawned        = false;
+    let bossDefeated       = false;
+    let remainingSpawns    = 0;
 
     // ======================
     // REGISTRA CALLBACKS DOS CHEATS
@@ -292,6 +303,7 @@ export function startGame(difficulty = "normal") {
     // ======================
 
     function killBoss(boss, index) {
+        bossFight = false;
 
         boss.element.classList.remove("enemy-boss");
         boss.element.classList.add("boss-dying");
@@ -306,9 +318,14 @@ export function startGame(difficulty = "normal") {
 
             score += 100;
 
-            scoreElement.innerHTML = `⭐ Score: ${score}`;
+            scoreElement.innerHTML =
+                `⭐ Score: ${score}`;
 
-            victory();
+            bossDefeated = true;
+
+            if (level >= TOTAL_PHASES) {
+                victory();
+            }
 
         }, 1500);
     }
@@ -403,10 +420,18 @@ export function startGame(difficulty = "normal") {
 
             enemies.push(enemy);
 
-            if (type === "boss") {
-            showBossHud(enemy);
-            playMusic("boss");
-        }
+            if (
+                type === "boss1" ||
+                type === "boss2" ||
+                type === "boss3" ||
+                type === "bossFinal"
+            ) {
+
+                bossFight = true;
+
+                showBossHud(enemy);
+                playMusic("boss");
+            }
         });
     }
 
@@ -538,13 +563,15 @@ export function startGame(difficulty = "normal") {
     }
 
     function startWave() {
-
+        bossDefeated = false;
+        bossSpawned  = false;
+        
         const phase = phases[level];
 
         gameArea.style.backgroundImage =
             `url("assets/sprites/${phase.floor}")`;
 
-        const duration = getWaveDuration(level, difficulty);
+        const duration   = getWaveDuration(level, difficulty);
         const spawnCount = getSpawnCount(level, difficulty);
 
         const initialInterval = Math.floor(
@@ -555,9 +582,9 @@ export function startGame(difficulty = "normal") {
             phase.spawnIntervalMin * settings.spawnMultiplier
         );
 
-        timeRemaining = duration;
-        waveActive    = true;
-        let remainingSpawns = spawnCount;
+        timeRemaining   = duration;
+        waveActive      = true;
+        remainingSpawns = spawnCount;
 
         door.style.display = "none";
 
@@ -567,6 +594,8 @@ export function startGame(difficulty = "normal") {
 
         updateTimerDisplay();
 
+        // ← cronômetro
+        clearInterval(timerInterval);
         timerInterval = setInterval(() => {
 
             if (gamePaused) return;
@@ -575,43 +604,23 @@ export function startGame(difficulty = "normal") {
 
             updateTimerDisplay();
 
-            if (timeRemaining <= 10000 && timerElement) {
-                timerElement.classList.add("urgent");
+            if (timeRemaining <= 10000) {
+                timerElement?.classList.add("urgent");
             }
 
             if (timeRemaining <= 0) {
-
-                waveActive = false;
-
                 clearInterval(timerInterval);
-                clearTimeout(spawnTimeout);
-
-                if (timerElement) {
-                    timerElement.innerHTML = "⏱️ 0s";
-                    timerElement.classList.remove("urgent");
-                }
-
                 gameOver();
             }
 
         }, 1000);
 
         function scheduleNextSpawn(phase, currentInterval, minInterval, totalDuration) {
-
-            if (!waveActive || remainingSpawns <= 0) {
-                if (remainingSpawns <= 0) {
-                    waveActive = false;
-                }
-                return;
-            }
+            if (!waveActive || remainingSpawns <= 0) return;
 
             spawnTimeout = setTimeout(() => {
-
                 if (!gameRunning || !waveActive) return;
-                if (remainingSpawns <= 0) {
-                    waveActive = false;
-                    return;
-                }
+                if (remainingSpawns <= 0) return;
 
                 const type =
                     phase.enemies[
@@ -619,7 +628,7 @@ export function startGame(difficulty = "normal") {
                     ];
 
                 spawnEnemy(type);
-                remainingSpawns -= 1;
+                remainingSpawns--;
 
                 const progress = 1 - (timeRemaining / totalDuration);
 
@@ -862,7 +871,7 @@ export function startGame(difficulty = "normal") {
                 bossSummon
             );
 
-            if (enemy.type === "boss") updateBossHud();
+            if (enemy.type.startsWith("boss")) updateBossHud();
 
             // God mode — não toma dano por contato
 
@@ -926,7 +935,7 @@ export function startGame(difficulty = "normal") {
 
                         if (dead) {
 
-                            if (enemy.type === "boss") {
+                            if (enemy.type.startsWith("boss")) {
                                 proj.remove();
                                 projectiles.splice(pi, 1);
                                 killBoss(enemy, ei);
@@ -965,7 +974,6 @@ export function startGame(difficulty = "normal") {
                     checkCollision(proj.element, player.element)
                     && !playerInvulnerable
                 ) {
-
                     playerInvulnerable = true;
 
                     player.life--;
@@ -976,13 +984,10 @@ export function startGame(difficulty = "normal") {
                     player.element.style.opacity = "0.5";
 
                     setTimeout(() => {
-
                         if (!activePowerUps["shield"]) {
                             playerInvulnerable = false;
                         }
-
                         player.element.style.opacity = "1";
-
                     }, 1000);
 
                     proj.remove();
@@ -1007,12 +1012,28 @@ export function startGame(difficulty = "normal") {
             }
         });
 
-        // PORTA
+        // BOSS + PORTA
 
-        if (!waveActive && enemies.length === 0) {
+        // Todos os monstros da fase morreram
+        if (
+            waveActive &&
+            remainingSpawns <= 0 &&
+            enemies.length === 0 &&
+            !bossSpawned
+        ) {
+
+            bossSpawned = true;
+            waveActive = false;
+
+            spawnEnemy(phaseBosses[level]);
+        }
+
+        // Boss derrotado
+        if (bossDefeated) {
             door.style.display = "block";
         }
 
+        // Entrou na porta
         if (
             door.style.display === "block" &&
             checkCollision(player.element, door)

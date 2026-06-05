@@ -23,8 +23,8 @@ export class Enemy {
             this.speed = 1;
             this.life = 1;
 
-            this.width = 106;
-            this.height = 90;
+            this.width = 100;
+            this.height = 85;
         }
 
         if (type === "slime-mini") {
@@ -66,22 +66,36 @@ export class Enemy {
             this.dashDirY     = 0;
         }
 
-        if (type === "boss") {
+        if (type === "boss1") {
+            this.speed = 1;
+            this.life = 25;
 
-            this.speed  = 0.8;
-            this.life   = 30;
+            this.width = 250;
+            this.height = 260;
+        }
 
-            this.width  = 400;
+        if (type === "boss2") {
+            this.speed = 1.3;
+            this.life = 40;
+
+            this.width = 300;
+            this.height = 320;
+        }
+
+        if (type === "boss3") {
+            this.speed = 1.6;
+            this.life = 60;
+
+            this.width = 350;
+            this.height = 370;
+        }
+
+        if (type === "bossFinal") {
+            this.speed = 2;
+            this.life = 80;
+
+            this.width = 400;
             this.height = 420;
-
-            this.shootCooldown  = 2000;
-            this.shootTimer     = 0;
-
-            this.summonCooldown = 8000;
-            this.summonTimer    = 0;
-
-            this.phase2  = false;
-            this.maxLife = 30;
         }
 
         // Aplica multiplicadores de dificuldade
@@ -90,8 +104,21 @@ export class Enemy {
 
         this.life = Math.ceil(this.life * lifeMult);
 
-        if (type === "boss") {
+        if (
+            type === "boss1" ||
+            type === "boss2" ||
+            type === "boss3" ||
+            type === "bossFinal"
+        ) {
             this.maxLife = this.life;
+
+            this.shootCooldown  = 2000;
+            this.shootTimer     = 0;
+
+            this.summonCooldown = 8000;
+            this.summonTimer    = 0;
+
+            this.phase2 = false;
         }
 
         // ======================
@@ -109,10 +136,16 @@ export class Enemy {
 
         this.element.style.backgroundSize = "contain";
 
-        // slime-mini usa o mesmo sprite do slime
+        let spriteType = type;
 
-        const spriteType =
-            type === "slime-mini" ? "slime" : type;
+        // slime-mini usa sprite do slime
+        if (type === "slime-mini") spriteType = "slime";
+
+        // bosses personalizados
+        if (type === "boss1") spriteType = "slimerei";
+        if (type === "boss2") spriteType = "bossEsqueleto";
+        if (type === "boss3") spriteType = "bossDemon";
+        if (type === "bossFinal") spriteType = "boss";
 
         this.element.style.backgroundImage =
             `url("assets/sprites/enemies/${spriteType}.png")`;
@@ -144,7 +177,11 @@ export class Enemy {
 
             this.updateDemon(dx, dy, distance, now);
 
-        } else if (this.type === "boss") {
+        } else if (
+            this.type === "boss1" ||
+            this.type === "boss2" ||
+            this.type === "boss3" ||
+            this.type === "bossFinal") {
 
             this.updateBoss(
                 dx, dy, distance, now,
