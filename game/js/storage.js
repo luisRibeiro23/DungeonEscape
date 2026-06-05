@@ -75,3 +75,18 @@ export function saveAudioPreferences(preferences) {
         console.warn("Falha ao salvar preferências de áudio:", error);
     }
 }
+
+const CHARACTER_KEY = "dungeonEscapeCharacter";
+
+export function saveCharacter(character) {
+    localStorage.setItem(
+        CHARACTER_KEY,
+        character
+    );
+}
+
+export function getCharacter() {
+    return localStorage.getItem(
+        CHARACTER_KEY
+    ) || "default";
+}
