@@ -221,27 +221,6 @@ function updateAudioButtons() {
     if (pauseSoundImg) pauseSoundImg.src = soundSrc;
 }
 
-function showInstructions() {
-    if (instructionsOverlay) {
-        instructionsOverlay.style.display = "flex";
-    }
-}
-
-function hideInstructions() {
-    if (instructionsOverlay) {
-        instructionsOverlay.style.display = "none";
-    }
-}
-
-helpButtonMain?.addEventListener("click", showInstructions);
-helpButtonPause?.addEventListener("click", showInstructions);
-instructionsClose?.addEventListener("click", hideInstructions);
-instructionsOverlay?.addEventListener("click", (event) => {
-    if (event.target === instructionsOverlay) {
-        hideInstructions();
-    }
-});
-
 musicBtn?.addEventListener("click", () => {
     playUISound("menu");
     toggleMusic();
@@ -267,6 +246,31 @@ pauseSoundBtn?.addEventListener("click", () => {
 });
 
 updateAudioButtons();
+
+// ======================
+// INSTRUÇÕES
+// ======================
+
+function showInstructions() {
+    if (instructionsOverlay) {
+        instructionsOverlay.style.display = "flex";
+    }
+}
+
+function hideInstructions() {
+    if (instructionsOverlay) {
+        instructionsOverlay.style.display = "none";
+    }
+}
+
+helpButtonMain?.addEventListener("click", showInstructions);
+helpButtonPause?.addEventListener("click", showInstructions);
+instructionsClose?.addEventListener("click", hideInstructions);
+instructionsOverlay?.addEventListener("click", (event) => {
+    if (event.target === instructionsOverlay) {
+        hideInstructions();
+    }
+});
 
 // ======================
 // PAINEL DE CHEATS

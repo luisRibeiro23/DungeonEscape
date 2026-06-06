@@ -235,8 +235,12 @@
 }
 
 .audio-btn {
-    background: transparent;
-    border: none;
+    width: 70px;
+    height: 70px;
+
+    border: black 2px solid;
+    border-radius: 12px;
+
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -250,6 +254,10 @@
     height: 60px;
     image-rendering: pixelated;
 }
+
+/* ======================
+   AJUDA
+   ====================== */
 
 .help-btn {
     position: absolute;
@@ -274,6 +282,10 @@
     top: 20px;
     right: 20px;
 }
+
+/* ======================
+   INSTRUÇÕES
+   ====================== */
 
 #instructions-overlay {
     position: fixed;
@@ -661,6 +673,12 @@
     border:2px solid #523318;
 
     cursor:pointer;
+}
+
+.character-card span {
+    font-size: 14px;
+    font-weight: bold;
+    color: rgb(207, 201, 199);
 }
 
 .character-card img{
