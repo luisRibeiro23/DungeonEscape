@@ -1268,8 +1268,10 @@ export function startGame(difficulty = "normal") {
 
                 }, 1000);
 
-                enemy.remove();
-                enemies.splice(i, 1);
+                if (enemy.type !== "boss") {
+                    enemy.remove();
+                    enemies.splice(i, 1);
+                }
 
                 if (player.life <= 0) gameOver();
             }
