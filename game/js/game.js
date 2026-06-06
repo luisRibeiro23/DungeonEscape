@@ -108,6 +108,9 @@ export function startGame(difficulty = "normal") {
     let playerInvulnerable = false;
     let waveActive         = false;
     let spawnTimeout       = null;
+    let spawnTimeoutStart  = 0;
+    let spawnTimeoutDelay  = 0;
+    let spawnTimeoutAction = null;
     let timerInterval      = null;
     let timeRemaining      = 0;
     let canShoot           = true;
@@ -115,6 +118,7 @@ export function startGame(difficulty = "normal") {
     let canDash            = true;
     const dashCooldown     = 1000;
     let bossRef            = null;
+    const pausedSummonCompletions = [];
 
     // ======================
     // REGISTRA CALLBACKS DOS CHEATS
@@ -134,7 +138,7 @@ export function startGame(difficulty = "normal") {
 
             waveActive = false;
 
-            clearTimeout(spawnTimeout);
+            clearSpawnTimeout();
             clearInterval(timerInterval);
 
             if (timerElement) {
@@ -268,7 +272,7 @@ export function startGame(difficulty = "normal") {
 
         gameRunning = false;
 
-        clearTimeout(spawnTimeout);
+        clearSpawnTimeout();
         clearInterval(timerInterval);
 
         stopMusic();
@@ -327,7 +331,7 @@ export function startGame(difficulty = "normal") {
 
         gameRunning = false;
 
-        clearTimeout(spawnTimeout);
+        clearSpawnTimeout();
         clearInterval(timerInterval);
 
         hideBossHud();
@@ -363,11 +367,78 @@ export function startGame(difficulty = "normal") {
 
         pauseScreen.style.display =
             gamePaused ? "flex" : "none";
+
+        if (gamePaused) {
+            pauseSpawnTimeout();
+        } else {
+            resumeSpawnTimeout();
+            resumeSummonCompletions();
+        }
     }
 
     // ======================
     // SPAWN
     // ======================
+
+    function clearSpawnTimeout() {
+
+        clearTimeout(spawnTimeout);
+
+        spawnTimeout       = null;
+        spawnTimeoutStart  = 0;
+        spawnTimeoutDelay  = 0;
+        spawnTimeoutAction = null;
+    }
+
+    function setSpawnTimeout(action, delay) {
+
+        clearTimeout(spawnTimeout);
+
+        spawnTimeoutAction = action;
+        spawnTimeoutDelay  = delay;
+        spawnTimeoutStart  = performance.now();
+
+        spawnTimeout = setTimeout(() => {
+
+            spawnTimeout       = null;
+            spawnTimeoutStart  = 0;
+            spawnTimeoutDelay  = 0;
+            spawnTimeoutAction = null;
+
+            action();
+
+        }, delay);
+    }
+
+    function pauseSpawnTimeout() {
+
+        if (!spawnTimeout || !spawnTimeoutAction) return;
+
+        const elapsed = performance.now() - spawnTimeoutStart;
+
+        spawnTimeoutDelay =
+            Math.max(0, spawnTimeoutDelay - elapsed);
+
+        clearTimeout(spawnTimeout);
+
+        spawnTimeout = null;
+    }
+
+    function resumeSpawnTimeout() {
+
+        if (!spawnTimeoutAction || spawnTimeout) return;
+
+        setSpawnTimeout(spawnTimeoutAction, spawnTimeoutDelay);
+    }
+
+    function resumeSummonCompletions() {
+
+        while (pausedSummonCompletions.length > 0) {
+            const completeSummon = pausedSummonCompletions.shift();
+
+            completeSummon();
+        }
+    }
 
     function createSummonEffect(x, y, onComplete) {
 
@@ -379,9 +450,22 @@ export function startGame(difficulty = "normal") {
 
         gameArea.appendChild(effect);
 
-        setTimeout(() => {
+        const completeSummon = () => {
+
             effect.remove();
             onComplete();
+
+        };
+
+        setTimeout(() => {
+
+            if (gamePaused) {
+                pausedSummonCompletions.push(completeSummon);
+                return;
+            }
+
+            completeSummon();
+
         }, 800);
     }
 
@@ -613,7 +697,7 @@ export function startGame(difficulty = "normal") {
                 waveActive = false;
 
                 clearInterval(timerInterval);
-                clearTimeout(spawnTimeout);
+                clearSpawnTimeout();
 
                 if (timerElement) {
                     timerElement.innerHTML = "⏱️ 0s";
@@ -634,7 +718,7 @@ export function startGame(difficulty = "normal") {
                 return;
             }
 
-            spawnTimeout = setTimeout(() => {
+            setSpawnTimeout(() => {
 
                 if (!gameRunning || !waveActive) return;
                 if (remainingSpawns <= 0) {
@@ -690,7 +774,7 @@ export function startGame(difficulty = "normal") {
 
     function nextLevel() {
 
-        clearTimeout(spawnTimeout);
+        clearSpawnTimeout();
         clearInterval(timerInterval);
 
         hideBossHud();
