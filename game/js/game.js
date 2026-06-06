@@ -648,14 +648,14 @@ export function startGame(difficulty = "normal") {
 
         const phase = phases[level];
 
+        gameArea.style.backgroundImage =
+            `url("assets/sprites/maps/${phase.floor}")`;
+            
         if (phase.enemies.includes("boss")) {
             spawnEnemy("boss");
             waveActive = true;
             return;
         }
-
-        gameArea.style.backgroundImage =
-            `url("assets/sprites/${phase.floor}")`;
 
         const duration = getWaveDuration(level, difficulty);
         const spawnCount = getSpawnCount(level, difficulty);

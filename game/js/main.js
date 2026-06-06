@@ -118,31 +118,6 @@ document
     }); 
 
 document
-    .querySelectorAll(".character-card")
-    .forEach(card => {
-
-        card.addEventListener("click", () => {
-
-            if (card.classList.contains("locked")) {
-                return;
-            }
-
-            document
-                .querySelectorAll(".character-card")
-                .forEach(c =>
-                    c.classList.remove("selected")
-                );
-
-            card.classList.add("selected");
-
-            saveCharacter(
-                card.dataset.skin
-            );
-            console.log("Salvo:", card.dataset.skin);
-        });
-    });   
-
-document
     .querySelectorAll("button")
     .forEach(button => {
 
@@ -150,6 +125,79 @@ document
             playUISound("menu");
         });
     });
+
+// ======================
+// SKIN SELECTION
+// ======================
+
+const characterButton =
+    document.getElementById("character-button");
+
+const characterOverlay =
+    document.getElementById("character-overlay");
+
+const characterClose =
+    document.getElementById("character-close");
+
+const characterCards = [
+    ...document.querySelectorAll(".character-card")
+];
+
+let selectedCharacterIndex =
+    characterCards.findIndex(card =>
+        card.classList.contains("selected")
+    );
+
+if (selectedCharacterIndex < 0) {
+    selectedCharacterIndex = 0;
+}
+
+function focusCharacter(index) {
+
+    if (index < 0)
+        index = characterCards.length - 1;
+
+    if (index >= characterCards.length)
+        index = 0;
+
+    selectedCharacterIndex = index;
+
+    characterCards.forEach(card =>
+        card.classList.remove("keyboard-focus")
+    );
+
+    characterCards[index].classList.add("keyboard-focus");
+
+    characterCards[index].scrollIntoView({
+        block: "nearest",
+        inline: "nearest"
+    });
+}
+
+function selectCharacter(card) {
+
+    if (card.classList.contains("locked"))
+        return;
+
+    characterCards.forEach(c =>
+        c.classList.remove("selected")
+    );
+
+    card.classList.add("selected");
+    saveCharacter(card.dataset.skin);
+    console.log("Salvo:", card.dataset.skin);
+}
+
+characterButton.addEventListener("click", () => {
+    playUISound("menu");
+    characterOverlay.style.display = "flex";
+    focusCharacter(selectedCharacterIndex);
+});
+
+characterClose.addEventListener("click", () => {
+    playUISound("menu");
+    characterOverlay.style.display = "none";
+});
 
 // ======================
 // SOM e MÚSICA
@@ -160,12 +208,12 @@ function updateAudioButtons() {
     const soundEnabled = isSoundEnabled();
 
     const musicSrc = musicEnabled
-        ? "../game/assets/sprites/music.jpeg"
-        : "../game/assets/sprites/noMusic.jpeg";
+        ? "../game/assets/sprites/icons/music.jpeg"
+        : "../game/assets/sprites/icons/noMusic.jpeg";
 
     const soundSrc = soundEnabled
-        ? "../game/assets/sprites/sound.jpeg"
-        : "../game/assets/sprites/noSound.jpeg";
+        ? "../game/assets/sprites/icons/sound.jpeg"
+        : "../game/assets/sprites/icons/noSound.jpeg";
 
     if (musicImg) musicImg.src = musicSrc;
     if (soundImg) soundImg.src = soundSrc;
@@ -305,8 +353,69 @@ startButton.addEventListener("click", async () => {
     startGame(selectedDifficulty);
 });
 
+document
+    .querySelectorAll(".character-card")
+    .forEach((card, index) => {
+
+        card.addEventListener("click", () => {
+
+            selectCharacter(card);
+
+            selectedCharacterIndex = index;
+
+            focusCharacter(selectedCharacterIndex);
+        });
+    });
+
+// ======================
+// KEYDOWN
+// ======================
+
 window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
+
+    const characterMenuOpen =
+    getComputedStyle(characterOverlay).display !== "none";
+
+    if (characterMenuOpen) {
+
+        if (key === "arrowleft") {
+            event.preventDefault();
+            playUISound("menu");
+            selectedCharacterIndex--;
+            if (selectedCharacterIndex < 0) {
+                selectedCharacterIndex = characterCards.length - 1;
+            }
+            focusCharacter(selectedCharacterIndex);
+            return;
+        }
+
+        if (key === "arrowright") {
+            event.preventDefault();
+            playUISound("menu");
+            selectedCharacterIndex++;
+            if (selectedCharacterIndex >= characterCards.length) {
+                selectedCharacterIndex = 0;
+            }
+            focusCharacter(selectedCharacterIndex);
+            return;
+        }
+
+        if (key === "enter") {
+            event.preventDefault();
+            playUISound("menu");
+            selectCharacter(
+                characterCards[selectedCharacterIndex]
+            );
+            return;
+        }
+
+        if (key === "escape") {
+            event.preventDefault();
+            characterOverlay.style.display = "none";
+            return;
+        }
+    }
 
     if (event.ctrlKey && !event.altKey && !event.metaKey) {
         switch (key) {
@@ -374,39 +483,4 @@ window.addEventListener("keydown", (event) => {
     if (key === "enter" || key === " ") {
         menuButtons[menuFocusedIndex].click();
     }
-});
-
-// ======================
-// SKIN SELECTION
-// ======================
-
-const characterButton =
-    document.getElementById("character-button");
-
-const characterOverlay =
-    document.getElementById("character-overlay");
-
-const characterClose =
-    document.getElementById("character-close");
-
-    characterButton.addEventListener("click", () => {
-    characterOverlay.style.display = "flex";
-});
-
-characterClose.addEventListener("click", () => {
-    characterOverlay.style.display = "none";
-});
-
-characterButton.addEventListener("click", () => {
-
-    playUISound("menu");
-
-    characterOverlay.style.display = "flex";
-});
-
-characterClose.addEventListener("click", () => {
-
-    playUISound("menu");
-
-    characterOverlay.style.display = "none";
 });
