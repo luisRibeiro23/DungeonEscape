@@ -68,7 +68,7 @@ export class Enemy {
 
         if (type === "boss") {
 
-            this.speed  = 0.8;
+            this.speed  = 1.5;
             this.life   = 30;
 
             this.width  = 400;
@@ -82,6 +82,9 @@ export class Enemy {
 
             this.phase2  = false;
             this.maxLife = 30;
+
+            this.pulseCooldown = 6000;
+            this.pulseTimer    = null;
         }
 
         // Aplica multiplicadores de dificuldade
@@ -128,7 +131,7 @@ export class Enemy {
     // UPDATE
     // ======================
 
-    update(playerX, playerY, now, onShoot, onFireball, onSummon) {
+    update(playerX, playerY, now, onShoot, onFireball, onSummon, onPulse) {
 
         const dx = playerX - this.x;
         const dy = playerY - this.y;
@@ -152,7 +155,8 @@ export class Enemy {
                 distance,
                 now,
                 onFireball,
-                onSummon
+                onSummon,
+                onPulse 
             )
 
         } else {
@@ -243,7 +247,7 @@ export class Enemy {
     // BOSS
     // ======================
 
-    updateBoss(dx, dy, distance, now, onFireball, onSummon) {
+    updateBoss(dx, dy, distance, now, onFireball, onSummon, onPulse) {
 
         if (this.fireballTimer === null)
             this.fireballTimer = now;
@@ -291,6 +295,15 @@ export class Enemy {
 
             if (onSummon) onSummon();
         }
+
+        if (now - this.pulseTimer >= this.pulseCooldown) {
+            this.pulseTimer = now;
+            if (onPulse) onPulse(
+                this.x + this.width  / 2,
+                this.y + this.height / 2
+            );
+        }
+        
     }
 
     // ======================
