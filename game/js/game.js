@@ -232,24 +232,116 @@ export function startGame(difficulty = "normal") {
 
         cutsceneScreen.style.display = "flex";
 
-        const lines = [
-            document.getElementById("cutscene-line-1"),
-            document.getElementById("cutscene-line-2"),
-            document.getElementById("cutscene-line-3"),
-            document.getElementById("cutscene-line-4"),
+        cutsceneScreen.innerHTML = `
+            <div class="esc-layer" id="esc-bg"></div>
+            <div class="esc-layer" id="esc-midwall"></div>
+            <div class="esc-layer" id="esc-floor"></div>
+            <div class="esc-layer" id="esc-ceiling"></div>
+
+            <div class="esc-torch-wrap esc-torch-left">
+                <div class="esc-torch"><div class="esc-flame"></div></div>
+                <div class="esc-glow"></div>
+            </div>
+
+            <div class="esc-torch-wrap esc-torch-right">
+                <div class="esc-torch"><div class="esc-flame"></div></div>
+                <div class="esc-glow"></div>
+            </div>
+
+            <div id="esc-exit-light"></div>
+            <div id="esc-vignette"></div>
+
+            <div id="esc-runner-shadow"></div>
+            <div id="esc-runner">
+                <svg width="38" height="60" viewBox="0 0 38 60" fill="none">
+                    <circle cx="19" cy="8" r="7" fill="#111"/>
+                    <rect x="15" y="14" width="8" height="18" rx="3" fill="#111"/>
+                    <path id="esc-cape" d="M15 16 Q8 28 10 38" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" fill="none"/>
+                    <line id="esc-arm-f" x1="23" y1="18" x2="30" y2="26" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+                    <line id="esc-arm-b" x1="15" y1="18" x2="8"  y2="26" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+                    <line id="esc-leg-f" x1="20" y1="32" x2="26" y2="48" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+                    <line id="esc-leg-b" x1="18" y1="32" x2="12" y2="48" stroke="#111" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div id="esc-phrases">
+                <p class="esc-phrase" id="esc-p1">O boss caiu...</p>
+                <p class="esc-phrase" id="esc-p2">A dungeon desmorona.</p>
+                <p class="esc-phrase" id="esc-p3">Corra. Não olhe para trás.</p>
+                <p class="esc-phrase esc-final" id="esc-p4">VOCÊ ESCAPOU</p>
+            </div>
+        `;
+
+        const legF   = document.getElementById("esc-leg-f");
+        const legB   = document.getElementById("esc-leg-b");
+        const armF   = document.getElementById("esc-arm-f");
+        const armB   = document.getElementById("esc-arm-b");
+        const cape   = document.getElementById("esc-cape");
+        const runner = document.getElementById("esc-runner");
+        const shadow = document.getElementById("esc-runner-shadow");
+
+        let frame = 0;
+        let rafId = null;
+
+        function animateRunner() {
+
+            frame++;
+
+            const s = Math.sin(frame * 0.28);
+            const c = Math.cos(frame * 0.28);
+
+            legF.setAttribute("x2", 20 + s * 10);
+            legF.setAttribute("y2", 48 + Math.abs(s) * -6);
+            legB.setAttribute("x2", 18 - s * 10);
+            legB.setAttribute("y2", 48 + Math.abs(c) * -6);
+            armF.setAttribute("x2", 23 - s * 7);
+            armF.setAttribute("y2", 26 + c * 4);
+            armB.setAttribute("x2", 15 + s * 7);
+            armB.setAttribute("y2", 26 - c * 4);
+            cape.setAttribute(
+                "d",
+                `M15 16 Q${8 + s * 3} 28 ${10 + s * 2} 38`
+            );
+
+            runner.style.transform =
+                `translateY(${Math.abs(s) * -4}px)`;
+            shadow.style.transform =
+                `scaleX(${1 + Math.abs(s) * 0.15}) scaleY(${1 - Math.abs(s) * 0.2})`;
+
+            rafId = requestAnimationFrame(animateRunner);
+        }
+
+        animateRunner();
+
+        const sequence = [
+            { id: "esc-p1", show: 400,  hide: 2400  },
+            { id: "esc-p2", show: 2800, hide: 5000  },
+            { id: "esc-p3", show: 5400, hide: 7800  },
+            { id: "esc-p4", show: 8200, hide: 11000 },
         ];
 
-        lines.forEach((line, i) => {
+        sequence.forEach(({ id, show, hide }) => {
+
+            const el = document.getElementById(id);
+
+            setTimeout(() => el?.classList.add("esc-show"), show);
 
             setTimeout(() => {
 
-                line.style.animation =
-                    `cutsceneLineIn 1.2s ease forwards`;
+                if (!el) return;
 
-            }, i * 1800);
+                el.classList.remove("esc-show");
+                el.classList.add("esc-hide");
+
+            }, hide);
         });
 
-        setTimeout(onComplete, lines.length * 1800 + 2000);
+        setTimeout(() => {
+
+            cancelAnimationFrame(rafId);
+            onComplete();
+
+        }, 12000);
     }
 
     function playCredits(onComplete) {
