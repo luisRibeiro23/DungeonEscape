@@ -7,12 +7,15 @@
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
     <title>Dungeon Escape</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/style.css?v=dev">
+    <link rel="stylesheet" href="css/menu.css?v=dev">
+    <link rel="stylesheet" href="css/game.css?v=dev">
 
 </head>
 
@@ -301,7 +304,18 @@
 
     </div>
 
-    <script type="module" src="js/main.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("sw.js", { updateViaCache: "none" })
+                .then((registration) => registration.update())
+                .catch((error) => {
+                    console.warn("Falha ao registrar controle de cache:", error);
+                });
+        }
+    </script>
+
+    <script type="module" src="js/main.js?v=dev"></script>
 
 </body>
 
