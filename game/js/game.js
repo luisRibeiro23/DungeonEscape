@@ -913,7 +913,14 @@ export function startGame(difficulty = "normal") {
     // NEXT LEVEL
     // ======================
 
+    function resetPowerUps() {
+        // Remove os itens do chão
+        powerups.forEach(pu => pu.remove());
+        powerups.length = 0; 
+    }
+
     function nextLevel() {
+        resetPowerUps();
 
         clearSpawnTimeout();
         clearInterval(timerInterval);
