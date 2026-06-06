@@ -125,6 +125,7 @@ export function startGame(difficulty = "normal") {
     let summonGeneration   = 0;
     let playerSlowed = false;
     const pausedSummonCompletions = [];
+    let pulses = [];
 
     // ======================
     // REGISTRA CALLBACKS DOS CHEATS
@@ -648,7 +649,7 @@ export function startGame(difficulty = "normal") {
 
         const types = ["slime", "skeleton", "demon"];
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 1; i++) {
             spawnEnemy(
                 types[Math.floor(Math.random() * types.length)]
             );
@@ -1102,6 +1103,23 @@ export function startGame(difficulty = "normal") {
         }, duration);
     }
 
+    function spawnPulse(x, y) {
+        const el = document.createElement("div");
+        el.classList.add("boss-pulse");
+        el.style.left = x + "px";
+        el.style.top  = y + "px";
+        document.getElementById("game-area").appendChild(el);
+
+        pulses.push({
+            x, y,
+            radius: 0,
+            maxRadius: 450,
+            speed: 6,
+            element: el,
+            done: false
+        });
+    }
+
     // ======================
     // COLISÃO
     // ======================
@@ -1289,7 +1307,8 @@ export function startGame(difficulty = "normal") {
                 now,
                 spawnEnemyProjectile,
                 bossFireball,
-                bossSummon
+                bossSummon,
+                spawnPulse
             );
             if (enemy.type === "boss") updateBossHud();
 
@@ -1424,6 +1443,38 @@ export function startGame(difficulty = "normal") {
 
                     if (player.life <= 0) gameOver();
                 }
+            }
+        });
+
+
+        pulses.forEach((pulse, i) => {
+            pulse.radius += pulse.speed;
+
+            // Atualiza visual via CSS
+            pulse.element.style.width  = pulse.radius * 2 + "px";
+            pulse.element.style.height = pulse.radius * 2 + "px";
+            pulse.element.style.marginLeft = -pulse.radius + "px";
+            pulse.element.style.marginTop  = -pulse.radius + "px";
+            pulse.element.style.opacity = 1 - (pulse.radius / pulse.maxRadius);
+
+            // Colisão com o player
+            const dx = player.x - pulse.x;
+            const dy = player.y - pulse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist <= pulse.radius && !pulse.hit) {
+                pulse.hit = true;
+                player.life--;
+                lifeElement.innerHTML = `❤️ Vida: ${player.life}`;
+                applySlowEffect(settings.fireballSlowDuration);
+                playSound("hit"); 
+                if (player.life <= 0) gameOver();
+            }
+
+            // Remove quando terminar
+            if (pulse.radius >= pulse.maxRadius) {
+                pulse.element.remove();
+                pulses.splice(i, 1);
             }
         });
 
