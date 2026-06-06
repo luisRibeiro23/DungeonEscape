@@ -565,7 +565,7 @@
 }
 
 /* ======================
-   CUTSCENE
+   CUTSCENE — FUGA DA DUNGEON
    ====================== */
 
 #cutscene-screen {
@@ -574,27 +574,287 @@
     display: none;
     justify-content: center;
     align-items: center;
-    background: #000;
+    background: #0a0608;
     z-index: 1000;
+    overflow: hidden;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
 }
 
-#cutscene-content {
+.esc-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+}
+
+#esc-bg {
+    background: repeating-linear-gradient(
+        90deg,
+        #120d10 0px,
+        #120d10 59px,
+        #1a1018 60px,
+        #1a1018 61px
+    );
+    animation: escScrollBg 8s linear infinite;
+}
+
+#esc-midwall {
+    top: 40px;
+    height: calc(100% - 120px);
+    background: repeating-linear-gradient(
+        90deg,
+        #1a1218 0px,
+        #1a1218 79px,
+        #130d11 80px,
+        #130d11 81px
+    );
+    animation: escScrollMid 5.5s linear infinite;
+    opacity: 0.7;
+}
+
+#esc-floor {
+    top: auto;
+    bottom: 0;
+    height: 80px;
+    background: repeating-linear-gradient(
+        90deg,
+        #2a1e24 0px,
+        #2a1e24 49px,
+        #1e1518 50px,
+        #1e1518 51px
+    );
+    animation: escScrollFloor 4s linear infinite;
+}
+
+#esc-ceiling {
+    height: 40px;
+    bottom: auto;
+    top: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        #1e1518 0px,
+        #1e1518 39px,
+        #150f13 40px,
+        #140e12 41px
+    );
+    animation: escScrollFloor 4s linear infinite;
+}
+
+@keyframes escScrollBg {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+@keyframes escScrollMid {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+@keyframes escScrollFloor {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+.esc-torch-wrap {
+    position: absolute;
+    bottom: 78px;
+    z-index: 4;
+    animation: escTorchMove 4s linear infinite;
+}
+
+.esc-torch-left {
+    left: 18%;
+    animation-delay: 0s;
+}
+
+.esc-torch-right {
+    left: 68%;
+    animation-delay: -2s;
+}
+
+@keyframes escTorchMove {
+    from { transform: translateX(0);      }
+    to   { transform: translateX(-100vw); }
+}
+
+.esc-torch {
+    width: 10px;
+    height: 26px;
+    background: linear-gradient(#4a2e10, #2a1508);
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    margin: 0 auto;
+}
+
+.esc-flame {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 20px;
+    background: radial-gradient(
+        ellipse at 50% 80%,
+        #ff6a00 0%,
+        #ee0979 60%,
+        transparent 100%
+    );
+    border-radius: 50% 50% 30% 30%;
+    animation: escFlicker 0.18s ease-in-out infinite alternate;
+    filter: blur(1.5px);
+}
+
+.esc-flame::after {
+    content: '';
+    position: absolute;
+    inset: 3px 4px;
+    background: radial-gradient(
+        ellipse at 50% 70%,
+        #ffe066 0%,
+        #ff8800 70%,
+        transparent 100%
+    );
+    border-radius: 50% 50% 30% 30%;
+}
+
+.esc-glow {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(
+        circle,
+        rgba(255,120,0,0.22) 0%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    animation: escGlowPulse 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes escFlicker {
+    from { transform: translateX(-50%) scaleX(1)    scaleY(1);    }
+    to   { transform: translateX(-50%) scaleX(0.82) scaleY(1.12); }
+}
+
+@keyframes escGlowPulse {
+    from { opacity: 0.7; }
+    to   { opacity: 1.0; }
+}
+
+#esc-exit-light {
+    position: absolute;
+    right: -80px;
+    top: 0;
+    bottom: 0;
+    width: 200px;
+    background: radial-gradient(
+        ellipse at 80% 50%,
+        rgba(255,230,150,0.18) 0%,
+        transparent 70%
+    );
+    z-index: 3;
+    animation: escExitGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes escExitGlow {
+    from { opacity: 0.6; right: -80px; }
+    to   { opacity: 1.0; right: -60px; }
+}
+
+#esc-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: radial-gradient(
+        ellipse at 50% 50%,
+        transparent 50%,
+        rgba(0,0,0,0.75) 100%
+    );
+    pointer-events: none;
+}
+
+#esc-runner {
+    position: absolute;
+    bottom: 78px;
+    left: 22%;
+    z-index: 10;
+    width: 38px;
+    height: 60px;
+}
+
+#esc-runner svg {
+    display: block;
+}
+
+#esc-runner-shadow {
+    position: absolute;
+    bottom: 76px;
+    left: 22%;
+    z-index: 9;
+    width: 38px;
+    height: 10px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+#esc-phrases {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.esc-phrase {
+    position: absolute;
+    inset: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 28px;
-    padding: 40px;
-}
-
-.cutscene-line {
-    font-family: 'Palatino Linotype', Georgia, serif;
-    font-size: 28px;
+    justify-content: center;
+    padding: 0 8vw;
+    font-size: clamp(30px, 4.8vw, 58px);
     font-style: italic;
     color: #e8d5a3;
+    letter-spacing: 3px;
     text-align: center;
     opacity: 0;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(212,160,23,0.4);
+    text-shadow:
+        0 0 16px rgba(212,160,23,0.7),
+        0 2px 8px rgba(0,0,0,0.9);
+    line-height: 1.15;
+    margin: 0;
+}
+
+.esc-phrase.esc-show {
+    animation: escFadePhrase 1.2s ease forwards;
+}
+
+.esc-phrase.esc-hide {
+    animation: escFadeOut 0.8s ease forwards;
+}
+
+.esc-phrase.esc-final {
+    font-size: clamp(48px, 8vw, 96px);
+    font-style: normal;
+    font-weight: bold;
+    color: #f0c040;
+    letter-spacing: 6px;
+    text-shadow:
+        0 0 30px rgba(212,160,23,1),
+        0 0 60px rgba(200,75,0,0.5);
+}
+
+@keyframes escFadePhrase {
+    0%   { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+    40%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes escFadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
 }
 
 /* ======================
