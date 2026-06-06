@@ -142,6 +142,7 @@
     height: 130px;
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
     image-rendering: pixelated;
     z-index: 10;
     transition: opacity 0.1s;

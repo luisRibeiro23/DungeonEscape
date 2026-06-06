@@ -862,6 +862,147 @@ export function startGame(difficulty = "normal") {
         );
     }
 
+    const PLAYER_SPRITE_SIZES = {
+        default: {
+            north: { width: 619, height: 809 },
+            south: { width: 522, height: 809 },
+            east:  { width: 771, height: 811 },
+            west:  { width: 771, height: 809 }
+        },
+        skin1: {
+            north: { width: 832, height: 1289 },
+            south: { width: 832, height: 1289 },
+            east:  { width: 832, height: 1289 },
+            west:  { width: 832, height: 1288 }
+        },
+        skin2: {
+            north: { width: 624, height: 1180 },
+            south: { width: 429, height: 781 },
+            east:  { width: 652, height: 1183 },
+            west:  { width: 652, height: 1183 }
+        },
+        skin3: {
+            north: { width: 472, height: 1024 },
+            south: { width: 260, height: 513 },
+            east:  { width: 328, height: 496 },
+            west:  { width: 362, height: 503 }
+        }
+    };
+
+    const ENEMY_SPRITE_SIZES = {
+        slime:        { width: 587, height: 425 },
+        "slime-mini": { width: 587, height: 425 },
+        skeleton:     { width: 894, height: 894 },
+        demon:        { width: 226, height: 234 },
+        boss:         { width: 234, height: 234 }
+    };
+
+    const ENEMY_ALPHA_OFFSETS = {
+        slime:        { top: 0.11, bottom: 0.10, left: 0.06, right: 0.08 },
+        "slime-mini": { top: 0.11, bottom: 0.10, left: 0.06, right: 0.08 },
+        skeleton:     { top: 0.12, bottom: 0.12, left: 0.28, right: 0.28 },
+        demon:        { top: 0.00, bottom: 0.00, left: 0.02, right: 0.02 },
+        boss:         { top: 0.11, bottom: 0.05, left: 0.22, right: 0.21 }
+    };
+
+    function getSpriteSize(entity) {
+        if (entity === player) {
+            const character = PLAYER_SPRITE_SIZES[player.character] ||
+                PLAYER_SPRITE_SIZES.default;
+
+            return character[player.direction] || character.south;
+        }
+
+        if (entity && entity.type) {
+            return ENEMY_SPRITE_SIZES[entity.type] || null;
+        }
+
+        return null;
+    }
+
+    function getRenderedSpriteRect(rect, entity) {
+        const spriteSize = getSpriteSize(entity);
+
+        if (!spriteSize) {
+            return {
+                left: rect.left,
+                top: rect.top,
+                right: rect.right,
+                bottom: rect.bottom
+            };
+        }
+
+        const spriteRatio = spriteSize.width / spriteSize.height;
+        const elementRatio = rect.width / rect.height;
+
+        let width = rect.width;
+        let height = rect.height;
+
+        if (spriteRatio > elementRatio) {
+            height = width / spriteRatio;
+        } else {
+            width = height * spriteRatio;
+        }
+
+        const left = rect.left + (rect.width - width) / 2;
+        const top = rect.top + (rect.height - height) / 2;
+
+        return {
+            left,
+            top,
+            right: left + width,
+            bottom: top + height
+        };
+    }
+
+    function applyCollisionOffsets(rect, entity) {
+        const offsets = entity && entity.type
+            ? ENEMY_ALPHA_OFFSETS[entity.type]
+            : null;
+
+        if (!offsets) return rect;
+
+        const width = rect.right - rect.left;
+        const height = rect.bottom - rect.top;
+
+        return {
+            left: rect.left + width * offsets.left,
+            top: rect.top + height * offsets.top,
+            right: rect.right - width * offsets.right,
+            bottom: rect.bottom - height * offsets.bottom
+        };
+    }
+
+    // Dano por contato: usa a área visível do sprite e conta toque de extremidades.
+    function isTouching(a, b, contactTolerance = 1) {
+
+        if (a.element && b.element) {
+            const A = applyCollisionOffsets(
+                getRenderedSpriteRect(a.element.getBoundingClientRect(), a),
+                a
+            );
+
+            const B = applyCollisionOffsets(
+                getRenderedSpriteRect(b.element.getBoundingClientRect(), b),
+                b
+            );
+
+            return !(
+                A.right  < B.left   - contactTolerance ||
+                A.left   > B.right  + contactTolerance ||
+                A.bottom < B.top    - contactTolerance ||
+                A.top    > B.bottom + contactTolerance
+            );
+        }
+
+        return !(
+            a.x + a.width  < b.x ||
+            a.x            > b.x + b.width ||
+            a.y + a.height < b.y ||
+            a.y            > b.y + b.height
+        );
+    }
+
     // ======================
     // UPDATE
     // ======================
@@ -898,7 +1039,7 @@ export function startGame(difficulty = "normal") {
             if (cheats.godMode) return;
 
             if (
-                checkCollision(player.element, enemy.element)
+                isTouching(player, enemy)
                 && !playerInvulnerable
             ) {
 
