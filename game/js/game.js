@@ -19,7 +19,7 @@ const difficultySettings = {
         enemyLifeMultiplier:  0.7,
         playerLife:           5,
         durationMultiplier:   0.8,
-        spawnMultiplier:      1.4,
+        spawnMultiplier:      1.2,
     },
 
     normal: {
@@ -118,6 +118,8 @@ export function startGame(difficulty = "normal") {
     let canDash            = true;
     const dashCooldown     = 1000;
     let bossRef            = null;
+    let pendingSummons     = 0;
+    let summonGeneration   = 0;
     const pausedSummonCompletions = [];
 
     // ======================
@@ -137,6 +139,7 @@ export function startGame(difficulty = "normal") {
             enemies.length = 0;
 
             waveActive = false;
+            clearPendingSummons();
 
             clearSpawnTimeout();
             clearInterval(timerInterval);
@@ -440,7 +443,22 @@ export function startGame(difficulty = "normal") {
         }
     }
 
+    function clearPendingSummons() {
+
+        pendingSummons = 0;
+        pausedSummonCompletions.length = 0;
+        summonGeneration++;
+
+        document
+            .querySelectorAll(".summon-effect")
+            .forEach((effect) => effect.remove());
+    }
+
     function createSummonEffect(x, y, onComplete) {
+
+        const generation = summonGeneration;
+        let completed = false;
+        pendingSummons++;
 
         const effect = document.createElement("div");
 
@@ -452,7 +470,16 @@ export function startGame(difficulty = "normal") {
 
         const completeSummon = () => {
 
+            if (completed) return;
+
+            completed = true;
+
             effect.remove();
+
+            pendingSummons = Math.max(0, pendingSummons - 1);
+
+            if (generation !== summonGeneration || !gameRunning) return;
+
             onComplete();
 
         };
@@ -646,6 +673,8 @@ export function startGame(difficulty = "normal") {
 
     function startWave() {
 
+        clearPendingSummons();
+
         const phase = phases[level];
 
         gameArea.style.backgroundImage =
@@ -776,6 +805,7 @@ export function startGame(difficulty = "normal") {
 
         clearSpawnTimeout();
         clearInterval(timerInterval);
+        clearPendingSummons();
 
         hideBossHud();
 
@@ -1263,7 +1293,7 @@ export function startGame(difficulty = "normal") {
 
         // PORTA
 
-        if (!waveActive && enemies.length === 0) {
+        if (!waveActive && enemies.length === 0 && pendingSummons === 0) {
             door.style.display = "block";
         }
 
