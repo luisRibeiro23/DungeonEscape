@@ -267,7 +267,7 @@
     position: absolute;
     width: 64px;
     height: 64px;
-    background-image: url("../assets/sprites/hitEffect.png");
+    background-image: url("../assets/sprites/effect/hitEffect.png");
     background-size: contain;
     background-repeat: no-repeat;
     pointer-events: none;
@@ -284,7 +284,7 @@
     position: absolute;
     width: 24px;
     height: 24px;
-    background-image: url("../assets/sprites/smoke.png");
+    background-image: url("../assets/sprites/effect/smoke.png");
     background-size: contain;
     background-repeat: no-repeat;
     pointer-events: none;
