@@ -20,6 +20,7 @@ const difficultySettings = {
         playerLife:           5,
         durationMultiplier:   0.8,
         spawnMultiplier:      1.2,
+        fireballSlowDuration: 2000,
     },
 
     normal: {
@@ -28,6 +29,7 @@ const difficultySettings = {
         playerLife:           3,
         durationMultiplier:   1,
         spawnMultiplier:      1,
+        fireballSlowDuration: 3500,
     },
 
     hard: {
@@ -36,6 +38,7 @@ const difficultySettings = {
         playerLife:           2,
         durationMultiplier:   1.4,
         spawnMultiplier:      0.65,
+        fireballSlowDuration: 5000, 
     }
 };
 
@@ -120,6 +123,7 @@ export function startGame(difficulty = "normal") {
     let bossRef            = null;
     let pendingSummons     = 0;
     let summonGeneration   = 0;
+    let playerSlowed = false;
     const pausedSummonCompletions = [];
 
     // ======================
@@ -651,6 +655,21 @@ export function startGame(difficulty = "normal") {
         }
     }
 
+    function bossFireball(startX, startY) {
+        const dx = player.x - startX;
+        const dy = player.y - startY;
+
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        spawnEnemyProjectile(
+            startX,
+            startY,
+            dx / dist,
+            dy / dist,
+            "fireball"
+        );
+    }
+
     // ======================
     // POWER-UPS
     // ======================
@@ -1051,6 +1070,38 @@ export function startGame(difficulty = "normal") {
         setTimeout(() => smoke.remove(), 500);
     }
 
+    function applySlowEffect(duration) {
+
+        if (playerSlowed) return;
+
+        playerSlowed = true;
+
+        const originalSpeed =
+            player.normalSpeed;
+
+        player.normalSpeed = 2.5;
+
+        if (!player.isDashing) {
+            player.speed = 2.5;
+        }
+
+        player.element.classList.add("cursed");
+
+        setTimeout(() => {
+
+            player.normalSpeed = 5;
+
+            if (!player.isDashing) {
+                player.speed = 5;
+            }
+
+            player.element.classList.remove("cursed");
+
+            playerSlowed = false;
+
+        }, duration);
+    }
+
     // ======================
     // COLISÃO
     // ======================
@@ -1233,11 +1284,13 @@ export function startGame(difficulty = "normal") {
         enemies.forEach((enemy, i) => {
 
             enemy.update(
-                player.x, player.y, now,
+                player.x,
+                player.y,
+                now,
                 spawnEnemyProjectile,
+                bossFireball,
                 bossSummon
             );
-
             if (enemy.type === "boss") updateBossHud();
 
             // God mode — não toma dano por contato
@@ -1347,6 +1400,9 @@ export function startGame(difficulty = "normal") {
                     playerInvulnerable = true;
 
                     player.life--;
+                    if (proj.type === "fireball") {
+                        applySlowEffect(settings.fireballSlowDuration);
+                    }
                     playSound("hit");
 
                     lifeElement.innerHTML = `❤️ Vida: ${player.life}`;

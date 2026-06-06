@@ -74,11 +74,11 @@ export class Enemy {
             this.width  = 400;
             this.height = 420;
 
-            this.shootCooldown  = 2000;
-            this.shootTimer     = 0;
+            this.fireballCooldown = 4000;
+            this.fireballTimer = null;
 
             this.summonCooldown = 8000;
-            this.summonTimer    = 0;
+            this.summonTimer    = null;
 
             this.phase2  = false;
             this.maxLife = 30;
@@ -128,7 +128,7 @@ export class Enemy {
     // UPDATE
     // ======================
 
-    update(playerX, playerY, now, onShoot, onSummon) {
+    update(playerX, playerY, now, onShoot, onFireball, onSummon) {
 
         const dx = playerX - this.x;
         const dy = playerY - this.y;
@@ -147,9 +147,13 @@ export class Enemy {
         } else if (this.type === "boss") {
 
             this.updateBoss(
-                dx, dy, distance, now,
-                onShoot, onSummon
-            );
+                dx,
+                dy,
+                distance,
+                now,
+                onFireball,
+                onSummon
+            )
 
         } else {
 
@@ -239,10 +243,13 @@ export class Enemy {
     // BOSS
     // ======================
 
-    updateBoss(dx, dy, distance, now, onShoot, onSummon) {
+    updateBoss(dx, dy, distance, now, onFireball, onSummon) {
 
-        if (!this.shootTimer)  this.shootTimer  = now;
-        if (!this.summonTimer) this.summonTimer = now;
+        if (this.fireballTimer === null)
+            this.fireballTimer = now;
+
+        if (this.summonTimer === null)
+            this.summonTimer = now;
 
         // Fase 2: mais rápido e atira mais quando < 50% vida
 
@@ -251,7 +258,7 @@ export class Enemy {
             this.life <= this.maxLife * 0.5
         ) {
             this.phase2 = true;
-            this.shootCooldown = 1200;
+            this.meteorCooldown = 5000;
             this.element.classList.add("boss-phase2");
         }
 
@@ -263,33 +270,16 @@ export class Enemy {
             this.y += (dy / distance) * this.speed * speedBoost;
         }
 
-        // Atira em 8 direções
+        // Bola de fogo
 
-        if (now - this.shootTimer >= this.shootCooldown) {
+        if (now - this.fireballTimer >= this.fireballCooldown) {
+            this.fireballTimer = now;
 
-            this.shootTimer = now;
-
-            if (onShoot) {
-
-                const dirs = [
-                    [ 1,  0], [-1,  0],
-                    [ 0,  1], [ 0, -1],
-                    [ 0.707,  0.707],
-                    [-0.707,  0.707],
-                    [ 0.707, -0.707],
-                    [-0.707, -0.707]
-                ];
-
-                dirs.forEach(([dirX, dirY]) => {
-
-                    onShoot(
-                        this.x + this.width  / 2,
-                        this.y + this.height / 2,
-                        dirX,
-                        dirY,
-                        "boss-bullet"
-                    );
-                });
+            if (onFireball) {
+                onFireball(
+                    this.x + this.width / 2,
+                    this.y + this.height / 2
+                );
             }
         }
 
