@@ -35,6 +35,7 @@ const startButton      = document.getElementById("start-button");
 const highScoreDisplay = document.getElementById("high-score-display");
 const difficultyButtons = document.querySelectorAll(".difficulty-btn");
 const menuButtons      = [...difficultyButtons, startButton];
+let instructionsCloseTimeout = null;
 
 // ======================
 // DIFICULDADE
@@ -221,6 +222,41 @@ function updateAudioButtons() {
     if (pauseSoundImg) pauseSoundImg.src = soundSrc;
 }
 
+<<<<<<< Updated upstream
+=======
+function showInstructions() {
+    if (instructionsOverlay) {
+        clearTimeout(instructionsCloseTimeout);
+        instructionsOverlay.style.display = "flex";
+        void instructionsOverlay.offsetWidth;
+        instructionsOverlay.classList.add("is-open");
+    }
+}
+
+function hideInstructions() {
+    if (instructionsOverlay) {
+        instructionsOverlay.classList.remove("is-open");
+
+        instructionsCloseTimeout = setTimeout(() => {
+
+            if (!instructionsOverlay.classList.contains("is-open")) {
+                instructionsOverlay.style.display = "none";
+            }
+
+        }, 260);
+    }
+}
+
+helpButtonMain?.addEventListener("click", showInstructions);
+helpButtonPause?.addEventListener("click", showInstructions);
+instructionsClose?.addEventListener("click", hideInstructions);
+instructionsOverlay?.addEventListener("click", (event) => {
+    if (event.target === instructionsOverlay) {
+        hideInstructions();
+    }
+});
+
+>>>>>>> Stashed changes
 musicBtn?.addEventListener("click", () => {
     playUISound("menu");
     toggleMusic();
