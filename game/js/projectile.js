@@ -20,7 +20,11 @@ export class Projectile {
             this.speed = 5;
         } else if (type === "boss-bullet") {
             this.speed = 6;
-        } else {
+        } else if (type === "fireball") {
+            this.speed = 6;
+            this.width = 100;
+            this.height = 100;
+        }else {
             this.speed = 10;
         }
 

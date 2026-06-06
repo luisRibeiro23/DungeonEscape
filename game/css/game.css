@@ -263,6 +263,20 @@
    EFEITOS VISUAIS
    ====================== */
 
+.cursed {
+    filter:
+        hue-rotate(260deg)
+        saturate(2)
+        brightness(0.7);
+    animation: cursedPulse .4s infinite;
+}
+
+@keyframes cursedPulse {
+    0% {opacity: 1;}
+    50% {opacity: .7;}
+    100% {opacity: 1;}
+}
+
 .hit-effect {
     position: absolute;
     width: 64px;
@@ -408,6 +422,15 @@
     background-repeat: no-repeat;
     background-position: center;
     animation: boneSpin 0.4s linear infinite;
+}
+
+.projectile-fireball {
+    width: 100px;
+    height: 100px;
+    background-image: url("../assets/sprites/project/meteor.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 @keyframes boneSpin {
