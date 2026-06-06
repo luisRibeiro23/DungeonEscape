@@ -205,7 +205,12 @@ export class Player {
                 ? ""
                 : "-1";
 
+        const spritePath =
+            this.character === "default"
+                ? "assets/sprites/player"
+                : `assets/sprites/player/${this.character}`;
+
         this.element.style.backgroundImage =
-            `url("assets/sprites/player/${this.character}/player-${this.direction}${frameSuffix}.png")`;
+            `url("${spritePath}/player-${this.direction}${frameSuffix}.png")`;
     }
 }
