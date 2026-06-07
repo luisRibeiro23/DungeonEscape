@@ -7,6 +7,7 @@ import { saveHighScore } from "./storage.js?v=1";
 import { phases, TOTAL_PHASES } from "./level.js";
 import { cheats, registerCheatCallbacks } from "./cheat.js";
 import { playSound, playMusic, stopMusic } from "./sound.js";
+import { applyMapEffect, clearMapEffects } from "./mapEffects.js";
 
 // ======================
 // DIFICULDADE
@@ -428,10 +429,10 @@ export function startGame(difficulty = "normal") {
     // ======================
 
     function gameOver() {
-
         gameRunning = false;
 
         clearSpawnTimeout();
+        clearMapEffects();
         clearInterval(timerInterval);
 
         hideBossHud();
@@ -791,7 +792,8 @@ export function startGame(difficulty = "normal") {
 
         gameArea.style.backgroundImage =
             `url("assets/sprites/maps/${phase.floor}")`;
-            
+        applyMapEffect(phase.floor); 
+
         if (phase.enemies.includes("boss")) {
             spawnEnemy("boss");
             waveActive = true;
