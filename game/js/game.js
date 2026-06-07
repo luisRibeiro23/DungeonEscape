@@ -44,6 +44,18 @@ const difficultySettings = {
 };
 
 // ======================
+// PONTUAÇÃO ENEMY
+// ======================
+
+const enemyScores = {
+    "slime":      10,
+    "slime-mini": 5,
+    "skeleton":   30,
+    "demon":      40,
+    "boss":       200,
+};
+
+// ======================
 // FUNÇÃO PRINCIPAL
 // ======================
 
@@ -169,7 +181,7 @@ export function startGame(difficulty = "normal") {
 
             [...enemies].forEach((e) => {
                 e.remove();
-                score += 10;
+                score += enemyScores[e.type] ?? 10;
             });
 
             enemies.length = 0;
@@ -189,6 +201,23 @@ export function startGame(difficulty = "normal") {
                 `❤️ Vida: ${player.life}`;
         }
     });
+
+const particleData = [
+    { x: '20%', top: '55%', dur: '2.2s', delay: '0s' },
+    { x: '50%', top: '70%', dur: '1.8s', delay: '0.6s' },
+    { x: '78%', top: '60%', dur: '2.5s', delay: '1.1s' },
+    { x: '35%', top: '65%', dur: '2.0s', delay: '1.7s' },
+    { x: '65%', top: '58%', dur: '1.6s', delay: '0.3s' },
+];
+particleData.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'door-particle';
+    el.style.setProperty('--x', p.x);
+    el.style.setProperty('--top', p.top);
+    el.style.setProperty('--dur', p.dur);
+    el.style.setProperty('--delay', p.delay);
+    door.appendChild(el);
+});
 
     // ======================
     // BARRA DE VIDA DO BOSS
@@ -413,7 +442,7 @@ export function startGame(difficulty = "normal") {
 
             enemies.splice(index, 1);
 
-            score += 100;
+            score += enemyScores["boss"] ?? 200;
 
             scoreElement.innerHTML = `⭐ Score: ${score}`;
 
@@ -1405,7 +1434,7 @@ export function startGame(difficulty = "normal") {
                             enemy.remove();
                             enemies.splice(ei, 1);
 
-                            score += 10;
+                            score += enemyScores[enemy.type] ?? 10;
                             scoreElement.innerHTML = `⭐ Score: ${score}`;
                         }
 
