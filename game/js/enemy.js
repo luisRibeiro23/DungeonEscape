@@ -74,7 +74,7 @@ export class Enemy {
             this.width  = 400;
             this.height = 420;
 
-            this.fireballCooldown = 4000;
+            this.fireballCooldown = 1500;
             this.fireballTimer = null;
 
             this.summonCooldown = 8000;
@@ -263,6 +263,7 @@ export class Enemy {
         ) {
             this.phase2 = true;
             this.meteorCooldown = 5000;
+            this.fireballCooldown = 2000;
             this.element.classList.add("boss-phase2");
         }
 
