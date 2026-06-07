@@ -84,32 +84,32 @@ Desbloqueie novos personagens conquistando pontos! Cada um tem uma aparência ú
 | Personagem | Pontos Requeridos | Descrição |
 |------------|-------------------|-----------|
 | **Cowboy** | 0 pts (Padrão) | O guerreiro padrão pronto para escapar |
-| **Cowgirl** | 200 pts | Uma mulher corajosa com estilo western |
-| **Professor** | 350 pts | Um acadêmico disposto a lutar |
-| **Exploradora** | 600 pts | Uma aventureira experiente na dungeon |
+| **Cowgirl** | 400 pts | Uma mulher corajosa com estilo western |
+| **Professor** | 800 pts | Um acadêmico disposto a lutar |
+| **Exploradora** | 1200 pts | Uma aventureira experiente na dungeon |
 
 ### 👹 Inimigos
 
 #### 1. **Slime** (Fase 1)
 - **Vida**: 1
 - **Velocidade**: Lenta
-- **Habilidades**: Nenhuma
-- **Dificuldade**: Fácil
-- **Pontos**: Pequena quantidade
+- **Habilidades**: Ao ser atingido, divide-se em 2 slimes menores
+- **Pontos Slime Grande**: 10
+- **Pontos Slime Pequeno**: 5
 
 #### 2. **Esqueleto** (Fase 2)
 - **Vida**: 2
 - **Velocidade**: Média-Rápida
 - **Habilidades**: Atira projéteis no jogador (cada 2.5s, até 350px de distância)
 - **Dificuldade**: Média
-- **Pontos**: Moderada quantidade
+- **Pontos**: 30
 
 #### 3. **Demônio** (Fase 3)
 - **Vida**: 4
 - **Velocidade**: Rápida
 - **Habilidades**: Executa dashes rápidos em direção ao jogador (a cada 3s)
 - **Dificuldade**: Difícil
-- **Pontos**: Grande quantidade
+- **Pontos**: 40
 
 #### 4. **Boss** (Fase 5)
 - **Vida**: 30 (pode aumentar em dificuldades altas)
@@ -120,7 +120,7 @@ Desbloqueie novos personagens conquistando pontos! Cada um tem uma aparência ú
   - Gira em volta do jogador (efeito visual de pulso)
   - Segunda fase ativada quando vida cai para metade
 - **Dificuldade**: Muito difícil
-- **Pontos**: Bônus especial ao vencer
+- **Pontos**: 200
 
 ---
 
