@@ -11,8 +11,6 @@ export const cheats = {
     extraLives:  false,
 };
 
-// Callbacks registrados pelo game.js
-
 let _onSkipPhase = null;
 let _onKillAll   = null;
 let _onExtraLives = null;
@@ -32,7 +30,6 @@ export function toggleCheat(type) {
     switch (type) {
 
         case "godMode":
-            // alterna o estado de godMode e atualiza visual/hud
             cheats.godMode = !cheats.godMode;
             updateCheatButton("cheat-godmode", cheats.godMode);
             updateCheatHUD();

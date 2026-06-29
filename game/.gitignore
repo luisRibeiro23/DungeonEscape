@@ -1,1 +1,8 @@
 *:Zone.Identifier
+
+.env
+node_modules/
+build/
+dist/
+src/generated/
+public/css/main.css

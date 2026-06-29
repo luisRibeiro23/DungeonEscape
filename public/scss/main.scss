@@ -1,0 +1,8 @@
+@use "sass:color";
+$primary: darkblue;
+$space: 4px;
+
+h2 {
+    color: color.adjust($primary, $lightness: 40%);
+    margin-top: $space * 2;
+}
