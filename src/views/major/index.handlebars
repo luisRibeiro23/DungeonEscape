@@ -1,0 +1,40 @@
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h1>Listagem de Cursos</h1>
+    <a href='/major/create' class='btn'>+ Novo Curso</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Sigla</th>
+            <th>Descrição</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each majors}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{code}}</td>
+            <td>{{#if description}}{{description}}{{else}}-{{/if}}</td>
+            <td>
+                <div class='actions'>
+                    <a href='/major/read/{{id}}' class='btn btn-sm'>Ver</a>
+                    <a href='/major/update/{{id}}' class='btn btn-sm btn-secondary'>Editar</a>
+                    <button class='btn btn-sm btn-danger' onclick="deletarMajor('{{id}}')">Excluir</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<script>
+async function deletarMajor(id) {
+    if (!confirm('Tem certeza que deseja excluir este curso?')) return;
+    const res = await fetch('/major/remove/' + id, { method: 'DELETE' });
+    if (res.ok) window.location.reload();
+    else alert('Erro ao excluir curso.');
+}
+</script>
