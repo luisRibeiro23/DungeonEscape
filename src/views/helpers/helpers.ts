@@ -29,8 +29,13 @@ function formatDate(date: Date | string) {
     });
 }
 
+function eq(a: unknown, b: unknown) {
+    return a === b;
+}
+
 export default {
     listProfs,
     listNodeTechs,
     formatDate,
+    eq,
 };

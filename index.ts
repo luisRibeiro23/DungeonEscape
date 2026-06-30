@@ -4,12 +4,13 @@ import { engine } from "express-handlebars";
 import validateEnv from "./src/utils/validateEnv.js";
 import logger from "./src/middlewares/logger.js";
 import router from "./src/router/router.js";
+import helpers from "./src/views/helpers/helpers.js";
 
 const env = validateEnv();
 
 const app = express();
 
-app.engine("handlebars", engine());
+app.engine("handlebars", engine({ helpers }));
 
 app.set("view engine", "handlebars");
 
