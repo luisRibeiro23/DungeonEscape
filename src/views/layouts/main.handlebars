@@ -27,7 +27,9 @@
 
         input[type="text"],
         input[type="email"],
-        textarea {
+        input[type="password"],
+        textarea,
+        select {
             width: 100%;
             padding: 8px 10px;
             border: 1px solid #a0c4f8;
@@ -35,8 +37,9 @@
             font-size: 0.95rem;
             outline: none;
             margin-bottom: 16px;
+            background: #fff;
         }
-        input:focus, textarea:focus { border-color: #3b82f6; }
+        input:focus, textarea:focus, select:focus { border-color: #3b82f6; }
 
         .form-group { margin-bottom: 8px; }
 

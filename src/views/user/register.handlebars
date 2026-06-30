@@ -1,0 +1,115 @@
+<div style="display:flex; justify-content:center; align-items:flex-start; min-height:80vh; padding-top:40px;">
+    <div style="width:100%; max-width:480px;">
+        <h1 style="margin-bottom:24px;">Cadastro de Usuário</h1>
+
+        {{#if error}}
+            <div style="background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:0.9rem;">
+                {{error}}
+            </div>
+        {{/if}}
+
+        {{#if success}}
+            <div style="background:#dcfce7; border:1px solid #86efac; color:#15803d; border-radius:4px; padding:10px 14px; margin-bottom:16px; font-size:0.9rem;">
+                {{success}}
+            </div>
+        {{/if}}
+
+        <form action='/user/register' method='POST' id='registerForm'>
+            <div class='form-group'>
+                <label for='fullname'>Nome Completo</label>
+                <input
+                    type='text'
+                    id='fullname'
+                    name='fullname'
+                    value='{{formData.fullname}}'
+                    maxlength='100'
+                    placeholder='Seu nome completo'
+                    required
+                />
+            </div>
+
+            <div class='form-group'>
+                <label for='email'>E-mail</label>
+                <input
+                    type='email'
+                    id='email'
+                    name='email'
+                    value='{{formData.email}}'
+                    placeholder='seu@email.com'
+                    required
+                />
+            </div>
+
+            <div class='form-group'>
+                <label for='password'>Senha</label>
+                <input
+                    type='password'
+                    id='password'
+                    name='password'
+                    minlength='6'
+                    placeholder='Mínimo 6 caracteres'
+                    required
+                />
+            </div>
+
+            <div class='form-group'>
+                <label for='confirmPassword'>Repetir Senha</label>
+                <input
+                    type='password'
+                    id='confirmPassword'
+                    name='confirmPassword'
+                    minlength='6'
+                    placeholder='Repita a senha'
+                    required
+                />
+                <p id='passwordError' style='color:#dc2626; font-size:0.85rem; display:none; margin-top:4px;'>
+                    As senhas não coincidem.
+                </p>
+            </div>
+
+            <div class='form-group'>
+                <label for='majorId'>Curso</label>
+                <select
+                    id='majorId'
+                    name='majorId'
+                    style='width:100%; padding:8px 10px; border:1px solid #a0c4f8; border-radius:4px; font-size:0.95rem; outline:none; margin-bottom:16px; background:#fff;'
+                    required
+                >
+                    <option value=''>Selecione um curso</option>
+                    {{#each majors}}
+                        <option value='{{id}}' {{#if (eq id ../formData.majorId)}}selected{{/if}}>
+                            {{name}} ({{code}})
+                        </option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div style='margin-top:8px; display:flex; gap:12px; align-items:center;'>
+                <button type='submit'>Cadastrar</button>
+                <a href='/' style='color:#6b7280; font-size:0.9rem; text-decoration:none;'>Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+    const errorEl = document.getElementById('passwordError');
+
+    confirmInput.addEventListener('input', function () {
+        if (this.value && this.value !== passwordInput.value) {
+            errorEl.style.display = 'block';
+        } else {
+            errorEl.style.display = 'none';
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        if (passwordInput.value !== confirmInput.value) {
+            e.preventDefault();
+            errorEl.style.display = 'block';
+            confirmInput.focus();
+        }
+    });
+</script>

@@ -8,10 +8,11 @@ const validate = (schema: Schema) => {
         }
         const { error } = schema.validate(req.body, { abortEarly: false });
         if (error) {
-            res.status(422).json({ error: error.details });
-        } else {
-            next();
+            // Retorna os detalhes de erro para que o controller possa usá-los
+            (req as any).validationErrors = error.details.map((d: any) => d.message);
+            return next();
         }
+        next();
     };
 };
 
