@@ -1,0 +1,97 @@
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h1>Listagem de Cursos</h1>
+    <a href='/major/create' class='btn'>+ Novo Curso</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Sigla</th>
+            <th>Descrição</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each majors}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{code}}</td>
+            <td>{{#if description}}{{description}}{{else}}-{{/if}}</td>
+            <td>
+                <div class='actions'>
+                    <a href='/major/read/{{id}}' class='btn btn-sm'>Ver</a>
+                    <a href='/major/update/{{id}}' class='btn btn-sm btn-secondary'>Editar</a>
+                    <button class='btn btn-sm btn-danger' onclick="abrirModal('{{id}}', '{{name}}')">Excluir</button>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<!-- Modal de confirmação -->
+<div id="modal-overlay">
+    <div style="background:#fff; border-radius:8px; padding:32px; width:100%; max-width:400px; box-shadow:0 4px 24px rgba(0,0,0,0.15);">
+        <h2 style="margin-bottom:12px; font-size:1.2rem;">Confirmar exclusão</h2>
+        <p style="margin-bottom:24px; color:#555;">Tem certeza que deseja excluir o curso <strong id="modal-nome"></strong>? Esta ação não pode ser desfeita.</p>
+        <div style="display:flex; justify-content:flex-end; gap:12px;">
+            <button class='btn btn-secondary' onclick="fecharModal()">Cancelar</button>
+            <button class='btn btn-danger' id="btn-confirmar">Excluir</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 100;
+        justify-content: center;
+        align-items: center;
+    }
+    #modal-overlay.ativo {
+        display: flex;
+    }
+</style>
+
+<script>
+    let majorIdSelecionado = null;
+
+    function abrirModal(id, nome) {
+        majorIdSelecionado = id;
+        document.getElementById('modal-nome').textContent = nome;
+        document.getElementById('modal-overlay').classList.add('ativo');
+    }
+
+    function fecharModal() {
+        majorIdSelecionado = null;
+        document.getElementById('modal-overlay').classList.remove('ativo');
+    }
+
+    document.getElementById('btn-confirmar').addEventListener('click', async () => {
+        if (!majorIdSelecionado) return;
+
+        try {
+            const res = await fetch('/major/remove/' + majorIdSelecionado, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (res.ok) {
+                fecharModal();
+                window.location.reload();
+            } else {
+                alert('Erro ao excluir curso.');
+            }
+        } catch (err) {
+            alert('Erro de conexão.');
+        }
+    });
+
+    document.getElementById('modal-overlay').addEventListener('click', function (e) {
+        if (e.target === this) fecharModal();
+    });
+</script>

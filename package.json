@@ -8,17 +8,22 @@
     "dev": "tsx watch index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
-},
+  },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "dotenv": "^17.4.2",
     "envalid": "^8.2.0",
     "express": "^5.2.1",
-    "express-handlebars": "^8.0.6"
+    "express-handlebars": "^8.0.6",
+    "joi": "^18.2.3",
+    "mariadb": "^3.5.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/express-handlebars": "^5.3.1",
     "@types/node": "^26.0.1",
+    "prisma": "^7.8.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }

@@ -1,20 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DungeonEscape</title>
-
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: #fff; }
 
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            border-bottom: 1px solid #ddd;
+        }
+        nav .brand { font-size: 1.1rem; font-weight: 600; }
+        nav .menu-icon { font-size: 1.4rem; cursor: pointer; }
+
+        main { padding: 32px 24px; }
+
+        h1 { font-size: 1.6rem; margin-bottom: 24px; }
+
+        label { display: block; font-size: 0.9rem; margin-bottom: 4px; color: #333; }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #a0c4f8;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            outline: none;
+            margin-bottom: 16px;
+        }
+        input:focus, textarea:focus { border-color: #3b82f6; }
+
+        .form-group { margin-bottom: 8px; }
+
+        button[type="submit"], .btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover, .btn:hover { background-color: #1d4ed8; }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-danger { background-color: #dc2626; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-size: 0.9rem; }
+        th { background: #f9fafb; font-weight: 600; }
+
+        .actions { display: flex; gap: 8px; }
+        .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+    </style>
 </head>
-
 <body>
-
-    {{{body}}}
-
+    <nav>
+        <span class="brand">Navbar</span>
+        <span class="menu-icon">&#9776;</span>
+    </nav>
+    <main>
+        {{{body}}}
+    </main>
 </body>
-
 </html>
