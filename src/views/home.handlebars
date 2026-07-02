@@ -1,3 +1,300 @@
-<h1>DungeonEscape</h1>
+{{!< main2}}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <p style="font-size:0.95rem; color:#374151;">Olá, <strong>{{userName}}</strong>!</p>
+    <form action="/user/logout" method="POST" style="margin:0;">
+        <button type="submit" class="btn btn-secondary" style="font-size:0.85rem; padding:6px 14px;">Sair</button>
+    </form>
+</div>
 
-<p>Projeto TP Final</p>
+
+<!-- MENU INICIAL -->
+
+    <div id="menu-screen">
+        <button id="help-button-main" class="help-btn">
+            <img src="/game/assets/sprites/icons/question_mark.png" alt="Ajuda">
+        </button>
+
+        <div class="menu-title-wrapper">
+            <img
+                src="/game/assets/sprites/menu/logo.png"
+                alt="Dungeon Escape"
+                class="game-logo" >
+        </div>
+
+        <div class="menu-panel">    
+            <div id="high-score-display">
+                🏆 High Score: 0
+            </div>
+
+            <!-- SELEÇÃO DE DIFICULDADE -->
+
+            <div id="difficulty-selector">
+
+                <p>Dificuldade</p>
+
+                <div id="difficulty-buttons">
+
+                    <button class="difficulty-btn" data-difficulty="easy">
+                        Fácil
+                    </button>
+
+                    <button class="difficulty-btn selected" data-difficulty="normal">
+                        Normal
+                    </button>
+
+                    <button class="difficulty-btn" data-difficulty="hard">
+                        Difícil
+                    </button>
+
+                </div>
+
+            </div>
+
+            <button id="start-button">Iniciar Jogo</button>
+        </div>
+    
+        <div id="audio-controls">
+
+        <button id="music-toggle" class="audio-btn">
+            <img src="/game/assets/sprites/icons/music.jpeg" alt="Música">
+        </button>
+
+        <button id="sound-toggle" class="audio-btn">
+            <img src="/game/assets/sprites/icons/sound.jpeg" alt="Som">
+        </button>
+        </div>
+
+        <button id="character-button">
+            <img src="/game/assets/sprites/icons/changeSkin.png" alt="Alterar Personagem">
+        </button>
+
+
+    </div>
+
+    <!-- JOGO -->
+
+    <div id="game-container">
+
+        <div id="hud">
+
+            <div id="hud-left">
+                <button id="pause-button" class="pause-btn" aria-label="Pausar jogo">
+                    <img src="/game/assets/sprites/icons/back.png" alt="Voltar">
+                </button>
+
+                <div id="hud-info">
+                    <div id="life">❤️ Vida: 3</div>
+                    <div id="score">⭐ Score: 0</div>
+                    <div id="level">🏰 Fase: 1</div>
+                    <div id="timer">⏱️ 30s</div>
+                </div>
+            </div>
+
+            <div id="hud-right">
+                <div id="cheat-hud"></div>
+                <div id="powerup-hud"></div>
+            </div>
+
+        </div>
+
+        <!-- BARRA DE VIDA DO BOSS -->
+
+        <div id="boss-hud">
+
+            <div id="boss-hud-label">👑 BOSS</div>
+
+            <div id="boss-hud-bar-wrapper">
+                <div id="boss-hud-bar"></div>
+            </div>
+
+            <div id="boss-hud-hp">30 / 30</div>
+
+        </div>
+
+        <div id="game-area">
+
+            <div id="player"></div>
+
+            <!-- PORTA CSS -->
+
+            <div id="door">
+                <div class="door-glow-ring"></div>
+                <div class="door-arch">
+                    <div class="door-stone-lines"></div>
+                    <div class="door-inner">
+                        <div class="door-rune">✦</div>
+                        <div class="door-rune">ᚱ</div>
+                        <div class="door-rune">ᚨ</div>
+                    </div>
+                </div>
+                <div class="door-base"></div>
+                <div class="door-label">SAÍDA</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAUSA -->
+
+    <div id="pause-screen">
+        <button id="help-button-pause" class="help-btn pause-help-btn">
+            <img src="/game/assets/sprites/icons/question_mark.png" alt="Ajuda">
+        </button>
+
+        <h1>PAUSADO</h1>
+
+        <button id="resume-button">Continuar</button>
+
+        <div id="pause-audio-controls">
+            <button id="pause-music-toggle" class="audio-btn">
+                <img src="/game/assets/sprites/icons/music.jpeg" alt="Música">
+            </button>
+            <button id="pause-sound-toggle" class="audio-btn">
+                <img src="/game/assets/sprites/icons/sound.jpeg" alt="Som">
+            </button>
+        </div>
+
+        <button id="restart-button-pause"
+                onclick="location.reload()">
+            Menu Principal
+        </button>
+
+    </div>
+
+    <!-- GAME OVER -->
+
+    <div id="game-over-screen">
+
+        <h1>GAME OVER</h1>
+
+        <p id="final-score">Pontuação: 0</p>
+
+        <button id="restart-button">Jogar Novamente</button>
+
+    </div>
+
+    <!-- CUTSCENE -->
+
+    <div id="cutscene-screen">
+
+        <div id="cutscene-content">
+
+            <p class="cutscene-line" id="cutscene-line-1">O boss caiu...</p>
+
+            <p class="cutscene-line" id="cutscene-line-2">As correntes da dungeon se partem.</p>
+
+            <p class="cutscene-line" id="cutscene-line-3">A luz do dia finalmente alcança seus olhos.</p>
+
+            <p class="cutscene-line" id="cutscene-line-4">Você escapou.</p>
+
+        </div>
+
+    </div>
+
+    <!-- CRÉDITOS -->
+
+    <div id="credits-screen">
+
+        <div id="credits-content">
+
+            <h2 class="credits-title">✦ Dungeon Escape ✦</h2>
+
+            <p class="credits-subtitle">Desenvolvido por</p>
+
+            <div class="credits-names">
+
+                <p class="credits-name">Luis Henrique de Carvalho Ribeiro</p>
+
+                <p class="credits-name">Rebeca Gabrielle Xavier</p>
+
+                <p class="credits-name">Estefany Licinha</p>
+
+            </div>
+
+            <p class="credits-year">2026</p>
+
+            <button id="credits-button">Ver Pontuação</button>
+
+        </div>
+
+    </div>
+
+    <!-- INSTRUÇÕES -->
+
+    <div id="instructions-overlay">
+        <div id="instructions-box">
+            <button id="instructions-close" class="close-btn">×</button>
+            <h2>Instruções</h2>
+            <ul>
+                <li>Use <strong>WASD</strong> ou <strong>setas</strong> para mover.</li>
+                <li><strong>Espaço</strong> para atirar e <strong>Shift</strong> para dash.</li>
+                <li><strong>Esc</strong> pausa o jogo e abre o menu de pause.</li>
+                <li><strong>Ctrl+G</strong> ativa/desativa God Mode.</li>
+                <li><strong>Ctrl+Y</strong> ativa/desativa Triple Shot.</li>
+                <li><strong>Ctrl+S</strong> pula a fase atual.</li>
+                <li><strong>Ctrl+K</strong> mata todos os inimigos da tela.</li>
+                <li><strong>Ctrl+E</strong> dá +5 vidas até o máximo de 20.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- VITÓRIA -->
+
+    <div id="victory-screen">
+
+        <h1>VOCÊ VENCEU! 🏆</h1>
+
+        <p id="victory-score">Pontuação: 0</p>
+
+        <p id="new-record">🎉 Novo Recorde!</p>
+
+        <button id="victory-restart-button">Jogar Novamente</button>
+
+    </div>
+
+    <div id="character-overlay">
+        <div id="character-box">
+
+            <button id="character-close">✖</button>
+
+            <h2>Selecione seu personagem</h2>
+
+            <div id="character-list">
+
+                <button class="character-card"
+                        data-skin="default"
+                        data-required-score="0">
+                    <img src="/game/assets/sprites/player/player-south.png">
+                    <span>Cowboy</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin1"
+                        data-required-score="400">
+                    <img src="/game/assets/sprites/player/skin1/player-south.png">
+                    <span>Cowgirl</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin2"
+                        data-required-score="800">
+                    <img src="/game/assets/sprites/player/skin2/player-south.png">
+                    <span>Professor</span>
+                </button>
+
+                <button class="character-card"
+                        data-skin="skin3"
+                        data-required-score="1200">
+                    <img src="/game/assets/sprites/player/skin3/player-south.png">
+                    <span>Exploradora</span>
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="/game/js/main.js?v=dev"></script>

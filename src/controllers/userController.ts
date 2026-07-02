@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as service from '../services/userServices.js';
 import * as majorService from '../services/majorServices.js';
-import type { RegisterUserDto } from '../types/userTypes.js';
+import type { RegisterUserDto, LoginUserDto } from '../types/userTypes.js';
 
 const register = async (req: Request, res: Response) => {
     try {
@@ -10,7 +10,6 @@ const register = async (req: Request, res: Response) => {
             return res.render('user/register', { majors });
         }
 
-        // Erros de validação do middleware
         const validationErrors: string[] | undefined = (req as any).validationErrors;
         if (validationErrors && validationErrors.length > 0) {
             const majors = await majorService.getAllMajors();
@@ -49,4 +48,38 @@ const register = async (req: Request, res: Response) => {
     }
 };
 
-export default { register };
+const login = async (req: Request, res: Response) => {
+    try {
+        if (req.method === 'GET') {
+            return res.render('user/login');
+        }
+
+        const data = req.body as LoginUserDto;
+        const user = await service.authenticateUser(data);
+
+        if (!user) {
+            return res.status(401).render('user/login', {
+                error: 'Email ou senha incorretos.',
+                formData: req.body,
+            });
+        }
+
+        (req.session as any).userId = user.id;
+        (req.session as any).userName = user.fullname;
+
+        return res.redirect('/');
+    } catch (error: any) {
+        return res.status(500).render('user/login', {
+            error: error.message ?? 'Erro interno do servidor.',
+            formData: req.body,
+        });
+    }
+};
+
+const logout = (req: Request, res: Response) => {
+    req.session.destroy(() => {
+        res.redirect('/user/login');
+    });
+};
+
+export default { register, login, logout };

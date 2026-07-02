@@ -207,8 +207,8 @@ export class Player {
 
         const spritePath =
             this.character === "default"
-                ? "assets/sprites/player"
-                : `assets/sprites/player/${this.character}`;
+                ? "/game/assets/sprites/player"
+                : `/game/assets/sprites/player/${this.character}`;
 
         this.element.style.backgroundImage =
             `url("${spritePath}/player-${this.direction}${frameSuffix}.png")`;

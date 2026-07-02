@@ -1,18 +1,18 @@
 import { getAudioPreferences, saveAudioPreferences } from "./storage.js?v=1";
 
 export const sounds = {
-    attack: new Audio('assets/sprites/sound/sfx/gun-shot.mp3'),
-    hit: new Audio('assets/sprites/sound/sfx/hurt.mp3'),
-    death: new Audio('assets/sprites/sound/sfx/game-over.mp3'),
-    pickup: new Audio('assets/sprites/sound/sfx/power-up.mp3'),
-    levelUp: new Audio('assets/sprites/sound/sfx/level-up.mp3'),
-    menu: new Audio('assets/sprites/sound/sfx/menu-select.wav')
+    attack: new Audio('/game/assets/sprites/sound/sfx/gun-shot.mp3'),
+    hit: new Audio('/game/assets/sprites/sound/sfx/hurt.mp3'),
+    death: new Audio('/game/assets/sprites/sound/sfx/game-over.mp3'),
+    pickup: new Audio('/game/assets/sprites/sound/sfx/power-up.mp3'),
+    levelUp: new Audio('/game/assets/sprites/sound/sfx/level-up.mp3'),
+    menu: new Audio('/game/assets/sprites/sound/sfx/menu-select.wav')
 };
 
 export const musics = {
-    game: new Audio('assets/sprites/sound/bgm/main-music.mp3'),
-    boss: new Audio('assets/sprites/sound/bgm/boss-theme.mp3'),
-    victory: new Audio('assets/sprites/sound/bgm/victory.mp3')
+    game: new Audio('/game/assets/sprites/sound/bgm/main-music.mp3'),
+    boss: new Audio('/game/assets/sprites/sound/bgm/boss-theme.mp3'),
+    victory: new Audio('/game/assets/sprites/sound/bgm/victory.mp3')
 };
 
 let currentMusic = null;

@@ -409,6 +409,7 @@ particleData.forEach(p => {
         playMusic("victory");
 
         const isNewRecord = saveHighScore(score);
+        saveScoreToServer(score);
 
         playCutscene(() => {
 
@@ -469,11 +470,24 @@ particleData.forEach(p => {
         playSound("death");
 
         saveHighScore(score);
+        saveScoreToServer(score);
 
         finalScoreElement.innerHTML = `Pontuação: ${score}`;
 
         gameContainer.style.display  = "none";
         gameOverScreen.style.display = "flex";
+    }
+
+    // ======================
+    // SALVAR SCORE NO SERVIDOR (Ajax)
+    // ======================
+
+    function saveScoreToServer(score) {
+        fetch('/game-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ score }),
+        }).catch(err => console.warn('Erro ao salvar score:', err));
     }
 
     // ======================
@@ -820,7 +834,7 @@ particleData.forEach(p => {
         const phase = phases[level];
 
         gameArea.style.backgroundImage =
-            `url("assets/sprites/maps/${phase.floor}")`;
+            `url("/game/assets/sprites/maps/${phase.floor}")`;
         applyMapEffect(phase.floor); 
 
         if (phase.enemies.includes("boss")) {

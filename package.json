@@ -17,6 +17,7 @@
     "envalid": "^8.2.0",
     "express": "^5.2.1",
     "express-handlebars": "^8.0.6",
+    "express-session": "^1.19.0",
     "joi": "^18.2.3",
     "mariadb": "^3.5.3"
   },
@@ -24,6 +25,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.6",
     "@types/express-handlebars": "^5.3.1",
+    "@types/express-session": "^1.19.0",
     "@types/node": "^26.0.1",
     "prisma": "^7.8.0",
     "tsx": "^4.22.4",
