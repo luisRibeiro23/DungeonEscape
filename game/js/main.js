@@ -209,12 +209,12 @@ function updateAudioButtons() {
     const soundEnabled = isSoundEnabled();
 
     const musicSrc = musicEnabled
-        ? "../game/assets/sprites/icons/music.jpeg"
-        : "../game/assets/sprites/icons/noMusic.jpeg";
+        ? "/game/assets/sprites/icons/music.jpeg"
+        : "/game/assets/sprites/icons/noMusic.jpeg";
 
     const soundSrc = soundEnabled
-        ? "../game/assets/sprites/icons/sound.jpeg"
-        : "../game/assets/sprites/icons/noSound.jpeg";
+        ? "/game/assets/sprites/icons/sound.jpeg"
+        : "/game/assets/sprites/icons/noSound.jpeg";
 
     if (musicImg) musicImg.src = musicSrc;
     if (soundImg) soundImg.src = soundSrc;

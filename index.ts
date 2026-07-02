@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import { engine } from "express-handlebars";
 
 import validateEnv from "./src/utils/validateEnv.js";
@@ -18,12 +19,22 @@ app.set("views", `${process.cwd()}/src/views`);
 
 app.use(logger("complete"));
 
+app.use(session({
+    secret: process.env.SESSION_SECRET ?? "dungeon-escape-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 horas
+}));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/css", express.static(`${process.cwd()}/public/css`));
 app.use("/js", express.static(`${process.cwd()}/public/js`));
 app.use("/img", express.static(`${process.cwd()}/public/img`));
+
+// Assets do jogo
+app.use("/game", express.static(`${process.cwd()}/game`));
 
 app.use(router);
 

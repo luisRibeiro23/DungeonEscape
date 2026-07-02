@@ -25,3 +25,15 @@ export const registerSchema = Joi.object({
         'any.required': 'Selecione um curso.',
     }),
 });
+
+export const loginSchema = Joi.object({
+    email: Joi.string().email({ tlds: { allow: false } }).required().messages({
+        'string.empty': 'O e-mail é obrigatório.',
+        'string.email': 'Informe um e-mail válido.',
+        'any.required': 'O e-mail é obrigatório.',
+    }),
+    password: Joi.string().required().messages({
+        'string.empty': 'A senha é obrigatória.',
+        'any.required': 'A senha é obrigatória.',
+    }),
+});

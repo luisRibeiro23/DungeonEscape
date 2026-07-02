@@ -118,7 +118,7 @@ export class Enemy {
             type === "slime-mini" ? "slime" : type;
 
         this.element.style.backgroundImage =
-            `url("assets/sprites/enemies/${spriteType}.png")`;
+            `url("/game/assets/sprites/enemies/${spriteType}.png")`;
 
         document
             .getElementById("game-area")
