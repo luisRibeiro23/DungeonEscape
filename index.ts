@@ -4,6 +4,7 @@ import { engine } from "express-handlebars";
 
 import validateEnv from "./src/utils/validateEnv.js";
 import logger from "./src/middlewares/logger.js";
+import locals from "./src/middlewares/locals.js";
 import router from "./src/router/router.js";
 import helpers from "./src/views/helpers/helpers.js";
 
@@ -25,6 +26,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 horas
 }));
+
+app.use(locals);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

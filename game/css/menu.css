@@ -779,8 +779,8 @@
 #character-button{
     position: absolute;
 
-    bottom: 20px;
-    left: 20px;
+    bottom: 65px;
+    left: 10px;
 
     width: 70px;
     height: 70px;
@@ -840,16 +840,23 @@
 
 #character-close{
     position:absolute;
-
+ 
     width:24px;
     height: 24px;
     top: 20px;
     right:20px;
-
+ 
     font-size: 18px;
     cursor:pointer;
+ 
+    background: transparent;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 #character-list{
     display:flex;
     justify-content:center;
