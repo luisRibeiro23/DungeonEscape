@@ -7,6 +7,21 @@
 </div>
 
 
+<script>
+    window.__USER_ID__ = "{{userId}}";
+
+    // Inicializa o high score do localStorage com o valor do banco,
+    // garantindo que o maior valor sempre prevaleça
+    (function () {
+        const key = "dungeonEscapeHighScore_{{userId}}";
+        const dbScore = {{highScore}};
+        const localScore = parseInt(localStorage.getItem(key) || "0");
+        if (dbScore > localScore) {
+            localStorage.setItem(key, dbScore.toString());
+        }
+    })();
+</script>
+
 <!-- MENU INICIAL -->
 
     <div id="menu-screen">
