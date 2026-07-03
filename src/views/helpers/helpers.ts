@@ -33,9 +33,14 @@ function eq(a: unknown, b: unknown) {
     return a === b;
 }
 
+function add(a: number, b: number) {
+    return a + b;
+}
+
 export default {
     listProfs,
     listNodeTechs,
     formatDate,
     eq,
+    add,
 };

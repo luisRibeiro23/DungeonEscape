@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
+import { getUserHighScore } from "../services/rankingServices.js";
 
 const mainController = {
 
-    index(req: Request, res: Response) {
+    async index(req: Request, res: Response) {
         const userName = (req.session as any).userName;
-        res.render("home", { userName, layout: "main2" });
+        const userId   = (req.session as any).userId;
+        const highScore = await getUserHighScore(userId);
+        res.render("home", { userName, userId, highScore, layout: "main2" });
     },
 
     about(req: Request, res: Response) {

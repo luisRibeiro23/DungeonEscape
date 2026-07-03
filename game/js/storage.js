@@ -4,13 +4,16 @@
 // dados do jogo no localStorage/sessionStorage
 // ======================
 
-const HIGH_SCORE_KEY = "dungeonEscapeHighScore";
+function getHighScoreKey() {
+    const userId = window.__USER_ID__ || "guest";
+    return `dungeonEscapeHighScore_${userId}`;
+}
 const AUDIO_PREFS_KEY = "dungeonEscapeAudioPreferences";
 
 export function getHighScore() {
 
     const saved =
-        localStorage.getItem(HIGH_SCORE_KEY);
+        localStorage.getItem(getHighScoreKey());
 
     return saved ? parseInt(saved) : 0;
 }
@@ -22,7 +25,7 @@ export function saveHighScore(score) {
     if (score > current) {
 
         localStorage.setItem(
-            HIGH_SCORE_KEY,
+            getHighScoreKey(),
             score.toString()
         );
 
