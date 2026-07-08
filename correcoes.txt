@@ -1,0 +1,5 @@
+A rota /about não possui imagens.
+O logger não salva os logs em arquivos
+Rota /lorem não implementada
+Páginas /hb1 a /hb4 não implementadas. Tem as views mas não tem rotas e nem funções nos controladores.
+SASS não instalado nem configurado
